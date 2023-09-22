@@ -1,3 +1,5 @@
+
+
 #include <ctype.h>
 
 #include <PxPhysicsAPI.h>
@@ -9,6 +11,9 @@
 #include "callbacks.hpp"
 
 #include <iostream>
+
+#include "Particle.h"
+#include "checkMemoryLeaks.h"
 
 std::string display_text = "This is a test";
 
@@ -29,6 +34,7 @@ PxPvd*                  gPvd        = NULL;
 PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
+Particle* particle;
 
 
 // Initialize physics engine
@@ -54,7 +60,9 @@ void initPhysics(bool interactive)
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
-	}
+
+	particle = new Particle(Vector3(0,0,0), Vector3(0,30,0));
+}
 
 
 // Function to configure what happens in each step of physics
@@ -66,12 +74,14 @@ void stepPhysics(bool interactive, double t)
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
+	particle->integrate(t);
 }
 
 // Function to clean data
 // Add custom code to the begining of the function
 void cleanupPhysics(bool interactive)
 {
+	delete particle;
 	PX_UNUSED(interactive);
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
@@ -113,6 +123,7 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 
 int main(int, const char*const*)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #ifndef OFFLINE_EXECUTION 
 	extern void renderLoop();
 	renderLoop();
