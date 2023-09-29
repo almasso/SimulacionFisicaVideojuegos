@@ -63,7 +63,8 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	particle = new Projectile(Vector3(0, 0, 0), Vector3(5, 0, 0), Projectile::ProjectileType::PROJECTILE_BULLET);
+	particle = new Projectile(Vector3(0, 0, 0), Vector3(15, 20, 0), Projectile::ProjectileType::PROJECTILE_BULLET);
+	//particle = new Particle(Vector3(0, 0, 0), Vector3(30, 50, 0));
 }
 
 
