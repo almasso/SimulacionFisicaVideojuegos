@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include "Particle.h"
+#include "Projectile.h"
 #include "checkMemoryLeaks.h"
 
 std::string display_text = "This is a test";
@@ -34,7 +35,8 @@ PxPvd*                  gPvd        = NULL;
 PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
-Particle* particle;
+//Particle* particle;
+Projectile* particle;
 
 
 // Initialize physics engine
@@ -46,9 +48,9 @@ void initPhysics(bool interactive)
 
 	gPvd = PxCreatePvd(*gFoundation);
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-	gPvd->connect(*transport,PxPvdInstrumentationFlag::eALL);
+	gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
-	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
+	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
@@ -61,7 +63,7 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	particle = new Particle(Vector3(0,0,0), Vector3(0,30,0));
+	particle = new Projectile(Vector3(0, 0, 0), Vector3(5, 0, 0), Projectile::ProjectileType::PROJECTILE_BULLET);
 }
 
 
