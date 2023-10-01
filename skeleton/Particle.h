@@ -8,7 +8,7 @@ public:
 	Particle(Vector3 Pos, Vector3 Vel, Vector3 Acceleration, float damping = 0.998);
 	virtual ~Particle();
 
-	void integrate(double t);
+	virtual void integrate(double t);
 
 protected:
 	Vector3 vel;
