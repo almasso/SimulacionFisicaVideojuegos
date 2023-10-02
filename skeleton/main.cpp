@@ -12,9 +12,11 @@
 #include "callbacks.hpp"
 
 #include <iostream>
+#include <unordered_map>
 
 #include "Particle.h"
 #include "Projectile.h"
+#include "Plane.h"
 #include "checkMemoryLeaks.h"
 
 std::string display_text = "This is a test";
@@ -39,6 +41,19 @@ ContactReportCallback gContactReportCallback;
 
 
 std::deque<Projectile*> projectiles;
+std::string bullet_text = "Bullet Mode";
+Projectile::ProjectileType projectile_mode = Projectile::ProjectileType::PROJECTILE_BULLET;
+std::unordered_map<Projectile::ProjectileType, Vector4> projectile_colors = {
+	{Projectile::ProjectileType::PROJECTILE_BULLET, Vector4(1,1,0,1)},
+	{Projectile::ProjectileType::PROJECTILE_CANNONBALL, Vector4(0,1,1,1)}
+};
+std::unordered_map<Projectile::ProjectileType, float> defaultProjectileSpeeds = {
+	{Projectile::ProjectileType::PROJECTILE_BULLET, 70.0f},
+	{Projectile::ProjectileType::PROJECTILE_CANNONBALL, 25.0f}
+};
+Plane* plane;
+
+
 
 
 // Initialize physics engine
@@ -66,6 +81,8 @@ void initPhysics(bool interactive)
 	gScene = gPhysics->createScene(sceneDesc);
 
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
+
+	plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
 }
 
 
@@ -74,12 +91,27 @@ void initPhysics(bool interactive)
 // t: time passed since last call in milliseconds
 void stepPhysics(bool interactive, double t)
 {
+	switch (projectile_mode) {
+		case Projectile::ProjectileType::PROJECTILE_BULLET: bullet_text = "Bullet Mode"; break;
+		case Projectile::ProjectileType::PROJECTILE_CANNONBALL: bullet_text = "Cannonball Mode"; break;
+	}
+
 	PX_UNUSED(interactive);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 
-	for (auto e : projectiles) if(e) e->integrate(t);
+	for (auto it = projectiles.begin(); it < projectiles.end();) {
+		if (*it) { //Si el proyectil existe...
+			(*it)->integrate(t);
+			if ((*it)->getPosition().p.y < 0.0f || (*it)->getStartTime() + 5000 < GetLastTime()) {
+				delete (*it);
+				it = projectiles.erase(it);
+			}
+			else ++it;
+		}
+	}
+
 }
 
 // Function to clean data
@@ -103,24 +135,25 @@ void cleanupPhysics(bool interactive)
 	transport->release();
 	
 	gFoundation->release();
-	}
+}
 
 // Function called when a key is pressed
 void keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
 
-	switch(toupper(key))
-	{
-	//case 'B': break;
-	//case ' ':	break;
-	case ' ':
-	{
-		projectiles.push_back(new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), 330, Projectile::ProjectileType::PROJECTILE_BULLET));
-		break;
-	}
-	default:
-		break;
+	switch(toupper(key)) {
+		case ' ':
+		{
+			projectiles.push_back(new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), defaultProjectileSpeeds.at(projectile_mode), projectile_mode, projectile_colors.at(projectile_mode)));
+			break;
+		}
+		case 'B': {
+			projectile_mode = projectile_mode == Projectile::ProjectileType::PROJECTILE_BULLET ? Projectile::ProjectileType::PROJECTILE_CANNONBALL : Projectile::ProjectileType::PROJECTILE_BULLET;
+			break;
+		}
+		default:
+			break;
 	}
 }
 
