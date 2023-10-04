@@ -9,6 +9,6 @@ private:
 	float mass;
 public:
 
-	Projectile(Vector3 Pos, Vector3 Dir, float VelS, ProjectileType type, Vector4 Col = {1,0,0,1});
+	Projectile(Vector3 Pos, Vector3 Dir, float VelS, float size, ProjectileType type, Vector4 Col = {1,0,0,1});
 };
 

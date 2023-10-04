@@ -48,8 +48,12 @@ std::unordered_map<Projectile::ProjectileType, Vector4> projectile_colors = {
 	{Projectile::ProjectileType::PROJECTILE_CANNONBALL, Vector4(0,1,1,1)}
 };
 std::unordered_map<Projectile::ProjectileType, float> defaultProjectileSpeeds = {
-	{Projectile::ProjectileType::PROJECTILE_BULLET, 70.0f},
-	{Projectile::ProjectileType::PROJECTILE_CANNONBALL, 25.0f}
+	{Projectile::ProjectileType::PROJECTILE_BULLET, 75.0f},
+	{Projectile::ProjectileType::PROJECTILE_CANNONBALL, 100.0f}
+};
+std::unordered_map<Projectile::ProjectileType, float> defaultProjectileSize = {
+	{Projectile::ProjectileType::PROJECTILE_BULLET, 0.6f},
+	{Projectile::ProjectileType::PROJECTILE_CANNONBALL, 4.0f}
 };
 Plane* plane;
 
@@ -145,7 +149,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	switch(toupper(key)) {
 		case ' ':
 		{
-			projectiles.push_back(new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), defaultProjectileSpeeds.at(projectile_mode), projectile_mode, projectile_colors.at(projectile_mode)));
+			projectiles.push_back(new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), defaultProjectileSpeeds.at(projectile_mode), defaultProjectileSize.at(projectile_mode), projectile_mode, projectile_colors.at(projectile_mode)));
 			break;
 		}
 		case 'B': {
