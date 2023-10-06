@@ -21,6 +21,8 @@ void Particle::integrate(double t) {
 	vel += acceleration * t;
 	vel *= pow(damping, t);
 
+	//lifeTime += t;
+
 #ifdef DEBUG
 	std::cout << "POSICIÓN:(" << pose.p.x << "," << pose.p.y << "," << pose.p.z << ")\n";
 	std::cout << "VELOCIDAD:(" << vel.x << "," << vel.y << "," << vel.z << ")\n";

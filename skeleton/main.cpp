@@ -57,6 +57,10 @@ std::unordered_map<Projectile::ProjectileType, float> defaultProjectileSize = {
 };
 Plane* plane;
 
+#ifdef PARTICLE
+Particle* particle;
+#endif
+
 
 
 
@@ -87,6 +91,10 @@ void initPhysics(bool interactive)
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
 	plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
+
+#ifdef PARTICLE
+	particle = new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 20);
+#endif
 }
 
 
@@ -100,6 +108,10 @@ void stepPhysics(bool interactive, double t)
 		case Projectile::ProjectileType::PROJECTILE_CANNONBALL: bullet_text = "Cannonball Mode"; break;
 	}
 
+#ifdef PARTICLE
+	particle->integrate(t);
+#endif
+
 	PX_UNUSED(interactive);
 
 	gScene->simulate(t);
@@ -108,7 +120,8 @@ void stepPhysics(bool interactive, double t)
 	for (auto it = projectiles.begin(); it < projectiles.end();) {
 		if (*it) { //Si el proyectil existe...
 			(*it)->integrate(t);
-			if ((*it)->getPosition().p.y < 0.0f || (*it)->getStartTime() + 5000 < GetLastTime()) {
+			if ((*it)->getPosition().p.y < 0.0f || (*it)->getPosition().p.x > 750.0f || (*it)->getPosition().p.x < -750.0f || (*it)->getPosition().p.z > 750.0f || (*it)->getPosition().p.z < -750.0f ||
+				(*it)->getStartTime() + 50 < GetLastTime()) {
 				delete (*it);
 				it = projectiles.erase(it);
 			}
@@ -127,6 +140,10 @@ void cleanupPhysics(bool interactive)
 		projectiles.pop_front();
 		delete e;
 	}
+
+#ifdef PARTICLE
+	delete particle;
+#endif
 	PX_UNUSED(interactive);
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++

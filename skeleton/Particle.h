@@ -12,6 +12,7 @@ public:
 	virtual void integrate(double t);
 	inline physx::PxTransform const getPosition() const { return pose; }
 	inline double const getStartTime() const { return startTime; }
+	//inline double const getLifeTime() const {return lifeTime;}
 
 protected:
 	Vector3 vel;
@@ -20,6 +21,7 @@ protected:
 	physx::PxTransform pose;
 	RenderItem* renderItem;
 	double startTime;
+	//double lifeTime = 0.0;
 
 	inline void setAcceleration(Vector3 acceleration) { this->acceleration = acceleration; }
 };
