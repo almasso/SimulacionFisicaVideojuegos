@@ -17,6 +17,7 @@
 #include "Particle.h"
 #include "Projectile.h"
 #include "Plane.h"
+#include "ParticleSystem.h"
 #include "checkMemoryLeaks.h"
 
 std::string display_text = "This is a test";
@@ -56,6 +57,7 @@ std::unordered_map<Projectile::ProjectileType, float> defaultProjectileSize = {
 	{Projectile::ProjectileType::PROJECTILE_CANNONBALL, 4.0f}
 };
 Plane* plane;
+ParticleSystem* partSystem;
 
 #ifdef PARTICLE
 Particle* particle;
@@ -90,7 +92,9 @@ void initPhysics(bool interactive)
 
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
-	plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
+	//plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
+	BoundingBox bb(Vector3(-50, 0, -50), Vector3(50, 600, 50));
+	partSystem = new ParticleSystem(bb, bb.bottomCenter(), { 0,50,0 }, { 5,10,5 });
 
 #ifdef PARTICLE
 	particle = new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 20);
@@ -103,6 +107,7 @@ void initPhysics(bool interactive)
 // t: time passed since last call in milliseconds
 void stepPhysics(bool interactive, double t)
 {
+	partSystem->update(t);
 	switch (projectile_mode) {
 		case Projectile::ProjectileType::PROJECTILE_BULLET: bullet_text = "Bullet Mode"; break;
 		case Projectile::ProjectileType::PROJECTILE_CANNONBALL: bullet_text = "Cannonball Mode"; break;
