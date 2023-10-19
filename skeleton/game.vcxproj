@@ -257,6 +257,7 @@
     <ClCompile Include="callbacks.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleGenerator.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Projectile.cpp" />
@@ -270,6 +271,7 @@
     <ClInclude Include="checkMemoryLeaks.h" />
     <ClInclude Include="core.hpp" />
     <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleGenerator.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Projectile.h" />

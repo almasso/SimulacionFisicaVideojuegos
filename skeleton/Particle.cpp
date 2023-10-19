@@ -1,6 +1,6 @@
 #include "Particle.h"
 #include <iostream>
-#define DEBUG
+//#define DEBUG
 
 Particle::Particle(Vector3 pos, Vector3 vel, Vector3 acceleration, float damping, Vector4 Col, bool affectedByGravity) : Particle(pos, vel, acceleration + Vector3(0.0f, (float)(-9.8f * affectedByGravity), 0), 1, damping, Col, false) {}
 

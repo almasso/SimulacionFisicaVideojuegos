@@ -15,6 +15,7 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
+    <ClCompile Include="ParticleGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -32,6 +33,7 @@
     <ClInclude Include="Plane.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="BoundingBox.h" />
+    <ClInclude Include="ParticleGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
