@@ -94,7 +94,7 @@ void initPhysics(bool interactive)
 
 	//plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
 	BoundingBox bb(Vector3(-50, 0, -50), Vector3(50, 600, 50));
-	partSystem = new ParticleSystem(bb, bb.bottomCenter(), { 0,50,0 }, { 5,10,5 });
+	//partSystem = new ParticleSystem(bb, bb.bottomCenter(), { 0,50,0 }, { 5,10,5 });
 
 #ifdef PARTICLE
 	particle = new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 20);
