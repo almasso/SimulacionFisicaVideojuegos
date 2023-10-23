@@ -26,7 +26,6 @@ Particle::Particle(Vector3 pos, Vector3 vel, Vector3 acceleration, float size, f
 	physx::PxSphereGeometry sphere(this->size);
 	physx::PxShape* shape = CreateShape(sphere);
 	renderItem = new RenderItem(shape, &pose, Col);
-	startTime = GetLastTime();
 	lifeTime = 0.0f;
 }
 

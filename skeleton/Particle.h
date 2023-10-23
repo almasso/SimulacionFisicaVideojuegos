@@ -13,8 +13,10 @@ public:
 
 	virtual void integrate(double t);
 	inline physx::PxTransform const getPosition() const { return pose; }
-	inline double const getStartTime() const { return startTime; }
+	inline double setLifeTime(float lifeTime) { this->lifeTime = lifeTime; }
 	inline double const getLifeTime() const {return lifeTime;}
+	inline void setPosition(Vector3 position) { this->pose = physx::PxTransform(position); }
+	inline void setVelocity(Vector3 velocity) { this->vel = velocity; }
 
 protected:
 	Vector3 vel;
@@ -22,8 +24,7 @@ protected:
 	float damping;
 	physx::PxTransform pose;
 	RenderItem* renderItem;
-	double startTime;
-	double lifeTime = 0.0;
+	float lifeTime = 0.0f;
 	float size;
 	Vector4 colour;
 

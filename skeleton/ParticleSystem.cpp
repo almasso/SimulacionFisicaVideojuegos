@@ -1,8 +1,9 @@
 #include "ParticleSystem.h"
-ParticleSystem::ParticleSystem(const BoundingBox& bB, const Point& genPos, Vector3 avgSpeed, Vector3 sigma) : _bb(bB), genPos(genPos), gen(std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count())) {
-	vX = new std::normal_distribution<float>(avgSpeed.x, sigma.x);
-	vY = new std::normal_distribution<float>(avgSpeed.y, sigma.y);
-	vZ = new std::normal_distribution<float>(avgSpeed.z, sigma.z);
+
+ParticleGenerator* ParticleSystem::getParticleGenerator(std::string name) {
+	for (auto it = _particle_generators.begin(); it != _particle_generators.end(); ++it) {
+		if ((*it)->getName() == name) return (*it);
+	}
 }
 
 void ParticleSystem::update(double t) {
