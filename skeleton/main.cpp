@@ -18,6 +18,7 @@
 #include "Projectile.h"
 #include "Plane.h"
 #include "ParticleSystem.h"
+#include "ParticleGenerator.h"
 #include "checkMemoryLeaks.h"
 
 std::string display_text = "This is a test";
@@ -94,7 +95,8 @@ void initPhysics(bool interactive)
 
 	//plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
 	BoundingBox bb(Vector3(-50, 0, -50), Vector3(50, 600, 50));
-	//partSystem = new ParticleSystem(bb, bb.bottomCenter(), { 0,50,0 }, { 5,10,5 });
+	partSystem = new ParticleSystem(bb);
+	partSystem->addParticleGenerator(new GaussianParticleGenerator("mainGaussianGenerator", bb.bottomCenter(), Vector3(4, 0.1f, 4), Vector3(0, 10, 0), Vector3(5, 5, 5), 5.0f, 5.0f));
 
 #ifdef PARTICLE
 	particle = new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 20);
@@ -125,8 +127,7 @@ void stepPhysics(bool interactive, double t)
 	for (auto it = projectiles.begin(); it < projectiles.end();) {
 		if (*it) { //Si el proyectil existe...
 			(*it)->integrate(t);
-			if ((*it)->getPosition().p.y < 0.0f || (*it)->getPosition().p.x > 750.0f || (*it)->getPosition().p.x < -750.0f || (*it)->getPosition().p.z > 750.0f || (*it)->getPosition().p.z < -750.0f ||
-				(*it)->getStartTime() + 50 < GetLastTime()) {
+			if ((*it)->getPosition().p.y < 0.0f || (*it)->getPosition().p.x > 750.0f || (*it)->getPosition().p.x < -750.0f || (*it)->getPosition().p.z > 750.0f || (*it)->getPosition().p.z < -750.0f) {
 				delete (*it);
 				it = projectiles.erase(it);
 			}

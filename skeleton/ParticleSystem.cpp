@@ -17,5 +17,7 @@ void ParticleSystem::update(double t) {
 		else ++it;
 	}
 
-	//_particles.push_back(new Particle(genPos, Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen)), 0.998f, Vector4(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1), true));
+	for (auto it = _particle_generators.begin(); it != _particle_generators.end(); ++it) {
+		_particles.splice(_particles.end(), (*it)->generateParticles());
+	}
 }

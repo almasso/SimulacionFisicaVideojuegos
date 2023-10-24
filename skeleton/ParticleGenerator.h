@@ -14,16 +14,14 @@ protected:
 	float avrg_lifeTime;
 	int numParticles;
 	std::vector<Particle*> models;
-	BoundingBox _bb;
 	
 	inline void setParticle(Particle* model) { models.push_back(model); }
-	ParticleGenerator(std::string name, const BoundingBox& bb, const Vector3& genPos, const Vector3& averageVel, float averageLifeTime) : name(name), _bb(bb), avrg_pos(genPos), avrg_vel(averageVel), avrg_lifeTime(averageLifeTime) {}
+	ParticleGenerator(std::string name, const Vector3& genPos, const Vector3& averageVel, float averageLifeTime) : name(name), avrg_pos(genPos), avrg_vel(averageVel), avrg_lifeTime(averageLifeTime) {}
 
 public:
-	inline std::string getName() const { return name; }
-	inline BoundingBox getBoundingBox() const { return _bb; }
 	virtual std::list<Particle*> generateParticles() = 0;
-	virtual ~ParticleGenerator();
+	inline std::string getName() const { return name; }
+	virtual ~ParticleGenerator() = default;
 
 };
 
@@ -40,13 +38,23 @@ protected:
 	std::normal_distribution<float>* t;
 
 public:
-	GaussianParticleGenerator(std::string name, const BoundingBox& bb, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime);
+	GaussianParticleGenerator(std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime);
 	~GaussianParticleGenerator();
 	std::list<Particle*> generateParticles() override;
 };
 
 class UniformParticleGenerator : public ParticleGenerator {
-
-
+protected:
+	std::uniform_real_distribution<float>* vX;
+	std::uniform_real_distribution<float>* vY;
+	std::uniform_real_distribution<float>* vZ;
+	std::uniform_real_distribution<float>* pX;
+	std::uniform_real_distribution<float>* pY;
+	std::uniform_real_distribution<float>* pZ;
+	std::uniform_real_distribution<float>* t;
+public:
+	UniformParticleGenerator(std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime);
+	~UniformParticleGenerator();
+	std::list<Particle*> generateParticles() override;
 };
 

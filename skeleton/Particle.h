@@ -13,7 +13,7 @@ public:
 
 	virtual void integrate(double t);
 	inline physx::PxTransform const getPosition() const { return pose; }
-	inline double setLifeTime(float lifeTime) { this->lifeTime = lifeTime; }
+	inline void setLifeTime(float lifeTime) { this->lifeTime = lifeTime; }
 	inline double const getLifeTime() const {return lifeTime;}
 	inline void setPosition(Vector3 position) { this->pose = physx::PxTransform(position); }
 	inline void setVelocity(Vector3 velocity) { this->vel = velocity; }
