@@ -1,9 +1,15 @@
 #include "ParticleSystem.h"
+#include "checkMemoryLeaks.h"
 
 ParticleGenerator* ParticleSystem::getParticleGenerator(std::string name) {
 	for (auto it = _particle_generators.begin(); it != _particle_generators.end(); ++it) {
 		if ((*it)->getName() == name) return (*it);
 	}
+}
+
+ParticleSystem::~ParticleSystem() {
+	for (auto p : _particles) delete p;
+	for (auto g : _particle_generators) delete g;
 }
 
 void ParticleSystem::update(double t) {
@@ -17,7 +23,7 @@ void ParticleSystem::update(double t) {
 		else ++it;
 	}
 
-	for (auto it = _particle_generators.begin(); it != _particle_generators.end(); ++it) {
-		_particles.splice(_particles.end(), (*it)->generateParticles());
+	for (auto at = _particle_generators.begin(); at != _particle_generators.end(); ++at) {
+		_particles.splice(_particles.end(), (*at)->generateParticles());
 	}
 }

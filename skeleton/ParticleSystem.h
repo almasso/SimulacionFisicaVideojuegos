@@ -4,8 +4,9 @@
 #include "Particle.h"
 #include "BoundingBox.h"
 #include "ParticleGenerator.h"
+#include "checkMemoryLeaks.h"
 
-const float tiempo_borrado = 20.0f;
+const float tiempo_borrado = 40.0f;
 
 class ParticleSystem {
 protected:
@@ -15,6 +16,7 @@ protected:
 	
 public:
 	ParticleSystem(const BoundingBox& bb) : _bb(bb) {}
+	~ParticleSystem();
 	void update(double t);
 	inline void addParticleGenerator(ParticleGenerator* pG) { _particle_generators.push_back(pG); };
 	ParticleGenerator* getParticleGenerator(std::string name);

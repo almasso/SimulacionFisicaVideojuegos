@@ -93,10 +93,10 @@ void initPhysics(bool interactive)
 
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
-	//plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
+	plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
 	BoundingBox bb(Vector3(-50, 0, -50), Vector3(50, 600, 50));
 	partSystem = new ParticleSystem(bb);
-	partSystem->addParticleGenerator(new GaussianParticleGenerator("mainGaussianGenerator", bb.bottomCenter(), Vector3(4, 0.1f, 4), Vector3(0, 10, 0), Vector3(5, 5, 5), 5.0f, 5.0f));
+	partSystem->addParticleGenerator(new GaussianParticleGenerator("mainGaussianGenerator", bb.bottomCenter() + Vector3(0,0,0), Vector3(0.5, 1, 0.5), Vector3(0, 50, 0), Vector3(5, 10, 5), 5.0f, 5.0f));
 
 #ifdef PARTICLE
 	particle = new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 20);
@@ -146,6 +146,9 @@ void cleanupPhysics(bool interactive)
 		projectiles.pop_front();
 		delete e;
 	}
+
+	delete plane;
+	delete partSystem;
 
 #ifdef PARTICLE
 	delete particle;

@@ -1,4 +1,10 @@
 #include "ParticleGenerator.h"
+#include "checkMemoryLeaks.h"
+
+ParticleGenerator::~ParticleGenerator() {
+	for (auto m : models) delete m;
+}
+
 GaussianParticleGenerator::GaussianParticleGenerator(std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime) : ParticleGenerator(name, generationPosition, averageSpeed, averageLifeTime), 
 	gen(std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count())), sigmaPos(sigmaPos), sigmaVel(sigmaSpeed)
 {
@@ -11,7 +17,7 @@ GaussianParticleGenerator::GaussianParticleGenerator(std::string name, const Poi
 	t = new std::normal_distribution<float>(avrg_lifeTime, sigmaLifeTime);
 
 	for (int i = 0; i < 10; ++i) {
-		setParticle(new Particle(0.998, Vector4(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1), true));
+		setParticle(new Particle(0.998, Vector4(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1)));
 	}
 }
 
@@ -27,15 +33,14 @@ GaussianParticleGenerator::~GaussianParticleGenerator() {
 
 std::list<Particle*> GaussianParticleGenerator::generateParticles() {
 	std::list<Particle*> tmp;
-	Particle* partTmp = new Particle(*models[rand() % models.size()]);
-	partTmp->setPosition(Vector3((*pX)(gen), (*pY)(gen), (*pZ)(gen)));
-	partTmp->setVelocity(Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen)));
+	Particle::particle_data data = models[rand() % models.size()]->getData();
+	Particle* partTmp = new Particle(Vector3((*pX)(gen), (*pY)(gen), (*pZ)(gen)), Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen)), data.damping, data.colour, true);
 	partTmp->setLifeTime((*t)(gen));
 	tmp.push_back(partTmp);
 	return tmp;
 }
 
-UniformParticleGenerator::UniformParticleGenerator(std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime) : ParticleGenerator(name, generationPosition, averageSpeed, averageLifeTime),
+/*UniformParticleGenerator::UniformParticleGenerator(std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime) : ParticleGenerator(name, generationPosition, averageSpeed, averageLifeTime),
 gen(std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count())), sigmaPos(sigmaPos), sigmaVel(sigmaSpeed)
 {
 	pX = new std::uniform_real_distribution<float>(avrg_pos.x, sigmaPos.x);
@@ -59,4 +64,4 @@ UniformParticleGenerator::~UniformParticleGenerator() {
 	delete vY;
 	delete vZ;
 	delete t;
-}
+}*/

@@ -1,5 +1,6 @@
 #pragma once
 #include "Particle.h"
+#include "checkMemoryLeaks.h"
 
 class Projectile : public Particle {
 public:

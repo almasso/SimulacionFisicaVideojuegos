@@ -1,5 +1,6 @@
 #pragma once
 #include "RenderUtils.hpp"
+#include "checkMemoryLeaks.h"
 
 using Point = Vector3;
 class BoundingBox {

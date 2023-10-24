@@ -1,4 +1,5 @@
 #include "Projectile.h"
+#include "checkMemoryLeaks.h"
 
 Projectile::Projectile(Vector3 Pos, Vector3 Dir, float VelS, float size, ProjectileType type, Vector4 Col) : Particle(Pos, Dir * VelS, Vector3(0,0,0), size, 0.998f, Col), type(type) {
 	switch (type) {

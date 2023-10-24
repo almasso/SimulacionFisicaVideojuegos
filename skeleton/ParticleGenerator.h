@@ -6,6 +6,7 @@
 #include <vector>
 #include "Particle.h"
 #include "BoundingBox.h"
+#include "checkMemoryLeaks.h"
 
 class ParticleGenerator {
 protected:
@@ -21,7 +22,7 @@ protected:
 public:
 	virtual std::list<Particle*> generateParticles() = 0;
 	inline std::string getName() const { return name; }
-	virtual ~ParticleGenerator() = default;
+	virtual ~ParticleGenerator();
 
 };
 
@@ -45,6 +46,7 @@ public:
 
 class UniformParticleGenerator : public ParticleGenerator {
 protected:
+	std::default_random_engine gen;
 	std::uniform_real_distribution<float>* vX;
 	std::uniform_real_distribution<float>* vY;
 	std::uniform_real_distribution<float>* vZ;
