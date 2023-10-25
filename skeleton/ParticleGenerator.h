@@ -55,7 +55,7 @@ protected:
 	std::uniform_real_distribution<float>* pZ;
 	std::uniform_real_distribution<float>* t;
 public:
-	UniformParticleGenerator(std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime);
+	UniformParticleGenerator(std::string name, const Point& pA, const Vector3& pB, const Vector3& sA, const Vector3& sB, float tA, float tB);
 	~UniformParticleGenerator();
 	std::list<Particle*> generateParticles() override;
 };
