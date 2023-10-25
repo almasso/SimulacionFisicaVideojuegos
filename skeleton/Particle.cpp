@@ -4,6 +4,7 @@
 //#define DEBUG
 
 Particle::Particle(Particle& p) {
+	this->data.type = p.data.type;
 	this->data.vel = p.data.vel;
 	this->data.acceleration = p.data.acceleration;
 	this->data.damping = p.data.damping;
@@ -17,16 +18,18 @@ Particle::Particle(Particle& p) {
 	this->data.renderItem = new RenderItem(shape, &(this->data.pose), this->data.colour);
 }
 
-Particle::Particle(float damping, Vector4 Col) {
+Particle::Particle(Particle_Type type, float damping, Vector4 Col) {
+	data.type = type;
 	data.damping = damping;
 	data.colour = Col;
 }
 
-Particle::Particle(Vector3 pos, Vector3 vel, float damping, Vector4 col, bool affectedByGravity) : Particle(pos, vel, Vector3(0.0f, (float)(-9.8f * affectedByGravity), 0.0f), damping, col, false) {}
+Particle::Particle(Particle_Type type, Vector3 pos, Vector3 vel, float damping, Vector4 col, bool affectedByGravity) : Particle(type, pos, vel, Vector3(0.0f, (float)(-9.8f * affectedByGravity), 0.0f), damping, col, false) {}
 
-Particle::Particle(Vector3 pos, Vector3 vel, Vector3 acceleration, float damping, Vector4 Col, bool affectedByGravity) : Particle(pos, vel, acceleration + Vector3(0.0f, (float)(-9.8f * affectedByGravity), 0), 1, damping, Col, false) {}
+Particle::Particle(Particle_Type type, Vector3 pos, Vector3 vel, Vector3 acceleration, float damping, Vector4 Col, bool affectedByGravity) : Particle(type, pos, vel, acceleration + Vector3(0.0f, (float)(-9.8f * affectedByGravity), 0), 1, damping, Col, false) {}
 
-Particle::Particle(Vector3 pos, Vector3 vel, Vector3 acceleration, float size, float damping, Vector4 Col, bool affectedByGravity) {
+Particle::Particle(Particle_Type type, Vector3 pos, Vector3 vel, Vector3 acceleration, float size, float damping, Vector4 Col, bool affectedByGravity) {
+	data.type = type;
 	data.acceleration = acceleration + Vector3(0.0f, (float)(-9.8f * affectedByGravity), 0);
 	data.vel = vel;
 	data.pose = physx::PxTransform(pos);

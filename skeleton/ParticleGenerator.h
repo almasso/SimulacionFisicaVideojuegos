@@ -20,7 +20,7 @@ protected:
 	ParticleGenerator(std::string name, const Vector3& genPos, const Vector3& averageVel, float averageLifeTime) : name(name), avrg_pos(genPos), avrg_vel(averageVel), avrg_lifeTime(averageLifeTime) {}
 
 public:
-	virtual std::list<Particle*> generateParticles() = 0;
+	virtual std::list<Particle*> generateParticles(int numParticles) = 0;
 	inline std::string getName() const { return name; }
 	virtual ~ParticleGenerator();
 
@@ -39,9 +39,9 @@ protected:
 	std::normal_distribution<float>* t;
 
 public:
-	GaussianParticleGenerator(std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime);
+	GaussianParticleGenerator(Particle::Particle_Type type, std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime);
 	~GaussianParticleGenerator();
-	std::list<Particle*> generateParticles() override;
+	std::list<Particle*> generateParticles(int numParticles) override;
 };
 
 class UniformParticleGenerator : public ParticleGenerator {
@@ -55,8 +55,8 @@ protected:
 	std::uniform_real_distribution<float>* pZ;
 	std::uniform_real_distribution<float>* t;
 public:
-	UniformParticleGenerator(std::string name, const Point& pA, const Vector3& pB, const Vector3& sA, const Vector3& sB, float tA, float tB);
+	UniformParticleGenerator(Particle::Particle_Type type, std::string name, const Point& pA, const Vector3& pB, const Vector3& sA, const Vector3& sB, float tA, float tB);
 	~UniformParticleGenerator();
-	std::list<Particle*> generateParticles() override;
+	std::list<Particle*> generateParticles(int numParticles) override;
 };
 

@@ -96,7 +96,7 @@ void initPhysics(bool interactive)
 	plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
 	BoundingBox bb(Vector3(-50, 0, -50), Vector3(50, 600, 50));
 	partSystem = new ParticleSystem(bb);
-	partSystem->addParticleGenerator(new UniformParticleGenerator("mainUniformParticleGenerator", bb.bottomCenter(), Vector3(0, 1, 0), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f));
+	partSystem->addParticleGenerator(new UniformParticleGenerator(Particle::Particle_Type::FIREWORK, "mainUniformParticleGenerator", bb.bottomCenter(), Vector3(0, 1, 0), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f));
 
 #ifdef PARTICLE
 	particle = new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 20);

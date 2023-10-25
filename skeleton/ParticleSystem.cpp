@@ -24,6 +24,6 @@ void ParticleSystem::update(double t) {
 	}
 
 	for (auto at = _particle_generators.begin(); at != _particle_generators.end(); ++at) {
-		_particles.splice(_particles.end(), (*at)->generateParticles());
+		_particles.splice(_particles.end(), (*at)->generateParticles(1));
 	}
 }

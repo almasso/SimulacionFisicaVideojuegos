@@ -4,7 +4,9 @@
 
 class Particle {
 public:
+	enum class Particle_Type {NORMAL, PROJECTILE, FIREWORK};
 	struct particle_data {
+		Particle_Type type;
 		Vector3 vel;
 		Vector3 acceleration;
 		float damping;
@@ -16,10 +18,10 @@ public:
 	};
 
 	Particle(Particle& p);
-	Particle(float damping = 0.998, Vector4 Col = { 1,0,0,1 });
-	Particle(Vector3 Pos, Vector3 Vel, float damping = 0.998, Vector4 Col = {1,0,0,1}, bool affectedByGravity = false);
-	Particle(Vector3 Pos, Vector3 Vel, Vector3 Acceleration, float damping = 0.998, Vector4 Col = {1,0,0,1}, bool affectedByGravity = false);
-	Particle(Vector3 Pos, Vector3 Vel, Vector3 Acceleration, float size = 1.0f, float damping = 0.998, Vector4 Col = { 1,0,0,1 }, bool affectedByGravity = false);
+	Particle(Particle_Type type, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
+	Particle(Particle_Type type, Vector3 Pos, Vector3 Vel, float damping = 0.998, Vector4 Col = {1,0,0,1}, bool affectedByGravity = false);
+	Particle(Particle_Type type, Vector3 Pos, Vector3 Vel, Vector3 Acceleration, float damping = 0.998, Vector4 Col = {1,0,0,1}, bool affectedByGravity = false);
+	Particle(Particle_Type type, Vector3 Pos, Vector3 Vel, Vector3 Acceleration, float size = 1.0f, float damping = 0.998, Vector4 Col = { 1,0,0,1 }, bool affectedByGravity = false);
 	virtual ~Particle();
 
 	virtual void integrate(double t);
