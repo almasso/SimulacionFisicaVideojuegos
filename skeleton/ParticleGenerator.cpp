@@ -1,8 +1,15 @@
 #include "ParticleGenerator.h"
 #include "checkMemoryLeaks.h"
+#include "Firework.h"
 
 ParticleGenerator::~ParticleGenerator() {
-	for (auto m : models) delete m;
+	for (auto it = models.begin(); it != models.end();) {
+		if ((*it)) {
+			delete (*it);
+			it = models.erase(it);
+		}
+		else ++it;
+	}
 }
 
 GaussianParticleGenerator::GaussianParticleGenerator(Particle::Particle_Type type, std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime) : ParticleGenerator(name, generationPosition, averageSpeed, averageLifeTime),
@@ -74,6 +81,28 @@ std::list<Particle*> UniformParticleGenerator::generateParticles(int numParticle
 		Particle* partTmp = new Particle(data.type, Vector3((*pX)(gen), (*pY)(gen), (*pZ)(gen)), Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen)), data.damping, data.colour, true);
 		partTmp->setLifeTime((*t)(gen));
 		tmp.push_back(partTmp);
+	}
+	return tmp;
+}
+
+FireworkGenerator::FireworkGenerator(Firework* model, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime) : GaussianParticleGenerator(Particle::Particle_Type::FIREWORK, "fireworkGen", generationPosition, sigmaPos, averageSpeed, sigmaSpeed, averageLifeTime, sigmaLifeTime) {
+	for (auto it = models.begin(); it != models.end();) {
+		if ((*it)) {
+			delete (*it);
+			it = models.erase(it);
+		}
+		else ++it;
+	}
+	models.push_back(new Firework(model->getGen(), model->getData().damping, model->getData().colour));
+}
+
+std::list<Particle*> FireworkGenerator::generateParticles(int numParticles) {
+	std::list<Particle*> tmp;
+	for (int i = 0; i < numParticles; ++i) {
+		Particle::particle_data data = models[0]->getData();
+		Firework* fireworkTmp = new Firework(static_cast<Firework*>(models[0])->getGen() - 1, Vector3((*pX)(gen), (*pY)(gen), (*pZ)(gen)), Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen)), data.damping, data.colour, true);
+		fireworkTmp->setLifeTime((*t)(gen));
+		tmp.push_back(fireworkTmp);
 	}
 	return tmp;
 }

@@ -8,6 +8,8 @@
 #include "BoundingBox.h"
 #include "checkMemoryLeaks.h"
 
+class Firework;
+
 class ParticleGenerator {
 protected:
 	std::string name;
@@ -60,3 +62,9 @@ public:
 	std::list<Particle*> generateParticles(int numParticles) override;
 };
 
+class FireworkGenerator : public GaussianParticleGenerator {
+public:
+	FireworkGenerator(Firework* model, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime);
+	std::list<Particle*> generateParticles(int numParticles) override;
+	~FireworkGenerator() = default;
+};

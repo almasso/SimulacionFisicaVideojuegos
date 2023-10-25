@@ -16,7 +16,12 @@ void ParticleSystem::update(double t) {
 	for (auto it = _particles.begin(); it != _particles.end();) {
 		(*it)->integrate(t);
 		
-		if ((*it)->getLifeTime() >= tiempo_borrado || !_bb.isInBoundingBox((*it)->getPosition().p)) {
+		if ((((*it)->getData().type == Particle::Particle_Type::FIREWORK) && (*it)->getLifeTime() >= tiempo_fireworks)) {
+			_particles.splice(_particles.end(), static_cast<Firework*>((*it))->explode());
+			delete (*it);
+			it = _particles.erase(it);
+		}
+		else if ((*it)->getLifeTime() >= tiempo_borrado || !_bb.isInBoundingBox((*it)->getPosition().p)) {
 			delete (*it);
 			it = _particles.erase(it);
 		}
@@ -26,4 +31,8 @@ void ParticleSystem::update(double t) {
 	for (auto at = _particle_generators.begin(); at != _particle_generators.end(); ++at) {
 		_particles.splice(_particles.end(), (*at)->generateParticles(1));
 	}
+}
+
+void ParticleSystem::generateFirework(Vector3 genPos, Vector3 vel, int gen, float damping, Vector4 col) {
+	_particles.push_back(new Firework(gen, genPos, vel, damping, col));
 }
