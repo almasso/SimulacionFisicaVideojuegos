@@ -85,18 +85,21 @@ std::list<Particle*> UniformParticleGenerator::generateParticles(int numParticle
 	return tmp;
 }
 
-FireworkGenerator::FireworkGenerator() : ParticleGenerator("fireworkGen", Vector3(0,0,0), Vector3(0,0,0), 0) {
+FireworkGenerator::FireworkGenerator(Firework* parent) : ParticleGenerator("fireworkGen", Vector3(0,0,0), Vector3(0,0,0), 0), parent(parent) {
 	for (int i = 0; i < 10; ++i) {
 		models.push_back(new Firework(rand() % 3 + 1, rand() % 1000 / 1000.0f, Vector4(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1)));
 	}
 }
 
+std::list<Particle*> FireworkGenerator::generateParticles(int numParticles) {
+	return generateParticles(parent, numParticles);
+}
+
 std::list<Particle*> FireworkGenerator::generateParticles(Firework* parent, int numParticles) {
 	std::list<Particle*> tmp;
 	for (int i = 0; i < numParticles; ++i) {
-		Particle::particle_data data = models[0]->getData();
-		Firework* fireworkTmp = new Firework(static_cast<Firework*>(models[0])->getGen() - 1, Vector3((*pX)(gen), (*pY)(gen), (*pZ)(gen)), Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen)), data.damping, data.colour, true);
-		fireworkTmp->setLifeTime((*t)(gen));
+		Particle::particle_data data = models[rand() % models.size()]->getData();
+		Firework* fireworkTmp = new Firework(static_cast<Firework*>(models[rand() % models.size()])->getGen() - 1, parent->getPosition().p, Vector3(rand() % 100 - 50, rand() % 100 - 50, rand() % 100 - 50).getNormalized() * 25, data.damping, data.colour, true);
 		tmp.push_back(fireworkTmp);
 	}
 	return tmp;

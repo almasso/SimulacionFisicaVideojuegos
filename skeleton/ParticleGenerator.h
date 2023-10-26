@@ -63,8 +63,11 @@ public:
 };
 
 class FireworkGenerator : public ParticleGenerator {
-public:
-	FireworkGenerator();
+private:
+	Firework* parent = nullptr;
 	std::list<Particle*> generateParticles(Firework* parent, int numParticles);
+public:
+	FireworkGenerator(Firework* parent);
+	std::list<Particle*> generateParticles(int numParticles);
 	~FireworkGenerator() = default;
 };
