@@ -62,9 +62,9 @@ public:
 	std::list<Particle*> generateParticles(int numParticles) override;
 };
 
-class FireworkGenerator : public GaussianParticleGenerator {
+class FireworkGenerator : public ParticleGenerator {
 public:
-	FireworkGenerator(Firework* model, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime);
-	std::list<Particle*> generateParticles(int numParticles) override;
+	FireworkGenerator();
+	std::list<Particle*> generateParticles(Firework* parent, int numParticles);
 	~FireworkGenerator() = default;
 };

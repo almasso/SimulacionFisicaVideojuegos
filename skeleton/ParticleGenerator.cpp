@@ -85,18 +85,13 @@ std::list<Particle*> UniformParticleGenerator::generateParticles(int numParticle
 	return tmp;
 }
 
-FireworkGenerator::FireworkGenerator(Firework* model, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime) : GaussianParticleGenerator(Particle::Particle_Type::FIREWORK, "fireworkGen", generationPosition, sigmaPos, averageSpeed, sigmaSpeed, averageLifeTime, sigmaLifeTime) {
-	for (auto it = models.begin(); it != models.end();) {
-		if ((*it)) {
-			delete (*it);
-			it = models.erase(it);
-		}
-		else ++it;
+FireworkGenerator::FireworkGenerator() : ParticleGenerator("fireworkGen", Vector3(0,0,0), Vector3(0,0,0), 0) {
+	for (int i = 0; i < 10; ++i) {
+		models.push_back(new Firework(rand() % 3 + 1, rand() % 1000 / 1000.0f, Vector4(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1)));
 	}
-	models.push_back(new Firework(model->getGen(), model->getData().damping, model->getData().colour));
 }
 
-std::list<Particle*> FireworkGenerator::generateParticles(int numParticles) {
+std::list<Particle*> FireworkGenerator::generateParticles(Firework* parent, int numParticles) {
 	std::list<Particle*> tmp;
 	for (int i = 0; i < numParticles; ++i) {
 		Particle::particle_data data = models[0]->getData();
