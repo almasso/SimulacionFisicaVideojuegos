@@ -14,11 +14,11 @@
 #include <iostream>
 #include <unordered_map>
 
-#include "Particle.h"
-#include "Projectile.h"
-#include "Plane.h"
-#include "ParticleSystem.h"
-#include "ParticleGenerator.h"
+#include "Particle/Particle.h"
+#include "Particle/Projectile.h"
+#include "Extras/Plane.h"
+#include "Systems/ParticleSystem.h"
+#include "Generators/ParticleGenerator.h"
 #include "checkMemoryLeaks.h"
 
 std::string display_text = "This is a test";

@@ -1,6 +1,6 @@
 #include "ParticleGenerator.h"
-#include "checkMemoryLeaks.h"
-#include "Firework.h"
+#include "../checkMemoryLeaks.h"
+#include "../Particle/Firework.h"
 
 ParticleGenerator::~ParticleGenerator() {
 	for (auto it = models.begin(); it != models.end();) {

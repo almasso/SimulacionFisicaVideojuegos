@@ -1,5 +1,5 @@
 #include "Particle.h"
-#include "checkMemoryLeaks.h"
+#include "../checkMemoryLeaks.h"
 #include <iostream>
 //#define DEBUG
 

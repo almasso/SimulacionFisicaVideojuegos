@@ -1,5 +1,5 @@
 #include "ParticleSystem.h"
-#include "checkMemoryLeaks.h"
+#include "../checkMemoryLeaks.h"
 
 ParticleGenerator* ParticleSystem::getParticleGenerator(std::string name) {
 	for (auto it = _particle_generators.begin(); it != _particle_generators.end(); ++it) {

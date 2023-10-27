@@ -1,6 +1,6 @@
 #pragma once
-#include "RenderUtils.hpp"
-#include "checkMemoryLeaks.h"
+#include "../RenderUtils.hpp"
+#include "../checkMemoryLeaks.h"
 
 class Particle {
 public:

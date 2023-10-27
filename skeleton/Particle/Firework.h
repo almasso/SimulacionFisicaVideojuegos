@@ -1,6 +1,6 @@
 #pragma once
 #include "Particle.h"
-#include "ParticleGenerator.h"
+#include "../Generators/ParticleGenerator.h"
 #include <list>
 
 class Firework : public Particle {

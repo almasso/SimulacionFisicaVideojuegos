@@ -4,9 +4,9 @@
 #include <random>
 #include <chrono>
 #include <vector>
-#include "Particle.h"
-#include "BoundingBox.h"
-#include "checkMemoryLeaks.h"
+#include "../Particle/Particle.h"
+#include "../Utils/BoundingBox.h"
+#include "../checkMemoryLeaks.h"
 
 class Firework;
 
