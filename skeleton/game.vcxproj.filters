@@ -17,6 +17,7 @@
     <ClCompile Include="Utils\BoundingBox.cpp" />
     <ClCompile Include="Generators\ParticleGenerator.cpp" />
     <ClCompile Include="Particle\Firework.cpp" />
+    <ClCompile Include="Generators\ForceGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -36,6 +37,7 @@
     <ClInclude Include="Utils\BoundingBox.h" />
     <ClInclude Include="Generators\ParticleGenerator.h" />
     <ClInclude Include="Particle\Firework.h" />
+    <ClInclude Include="Generators\ForceGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

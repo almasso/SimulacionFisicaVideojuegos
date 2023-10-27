@@ -47,8 +47,9 @@ Particle::~Particle() {
 }
 
 void Particle::integrate(double t) {
-	data.pose.p += data.vel * t;
+	//Euler semi-implícito
 	data.vel += data.acceleration * t;
+	data.pose.p += data.vel * t;
 	data.vel *= pow(data.damping, t);
 
 	data.lifeTime += t;

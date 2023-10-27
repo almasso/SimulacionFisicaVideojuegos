@@ -1,5 +1,6 @@
 #pragma once
 #include "../RenderUtils.hpp"
+#include "../Generators/ForceGenerator.h"
 #include "../checkMemoryLeaks.h"
 
 class Particle {
@@ -15,6 +16,7 @@ public:
 		float lifeTime = 0.0f;
 		float size;
 		Vector4 colour;
+		Vector3 force;
 	};
 
 	Particle(Particle& p);
@@ -37,4 +39,7 @@ protected:
 	particle_data data;
 
 	inline void setAcceleration(Vector3 acceleration) { this->data.acceleration = acceleration; }
+
+	void clearForce();
+	void addForce(const Force& f);
 };
