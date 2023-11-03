@@ -6,12 +6,13 @@
 Particle::Particle(Particle& p) {
 	this->data.type = p.data.type;
 	this->data.vel = p.data.vel;
-	this->data.acceleration = p.data.acceleration;
 	this->data.damping = p.data.damping;
 	this->data.pose = p.data.pose;
 	this->data.lifeTime = 0.0;
 	this->data.size = p.data.size;
 	this->data.colour = p.data.colour;
+	this->data.force = p.data.force;
+	this->data.inv_mass = p.data.inv_mass;
 	
 	physx::PxSphereGeometry sphere(this->data.size);
 	physx::PxShape* shape = CreateShape(sphere);
@@ -24,13 +25,10 @@ Particle::Particle(Particle_Type type, float damping, Vector4 Col) {
 	data.colour = Col;
 }
 
-Particle::Particle(Particle_Type type, Vector3 pos, Vector3 vel, float damping, Vector4 col, bool affectedByGravity) : Particle(type, pos, vel, Vector3(0.0f, (float)(-9.8f * affectedByGravity), 0.0f), damping, col, false) {}
+Particle::Particle(Particle_Type type, float inv_mass, Vector3 pos, Vector3 vel, float damping, Vector4 Col) : Particle(type, inv_mass, pos, vel, 1, damping, Col) {}
 
-Particle::Particle(Particle_Type type, Vector3 pos, Vector3 vel, Vector3 acceleration, float damping, Vector4 Col, bool affectedByGravity) : Particle(type, pos, vel, acceleration + Vector3(0.0f, (float)(-9.8f * affectedByGravity), 0), 1, damping, Col, false) {}
-
-Particle::Particle(Particle_Type type, Vector3 pos, Vector3 vel, Vector3 acceleration, float size, float damping, Vector4 Col, bool affectedByGravity) {
+Particle::Particle(Particle_Type type, float inv_mass, Vector3 pos, Vector3 vel, float size, float damping, Vector4 Col) {
 	data.type = type;
-	data.acceleration = acceleration + Vector3(0.0f, (float)(-9.8f * affectedByGravity), 0);
 	data.vel = vel;
 	data.pose = physx::PxTransform(pos);
 	data.damping = damping;
@@ -40,6 +38,8 @@ Particle::Particle(Particle_Type type, Vector3 pos, Vector3 vel, Vector3 acceler
 	physx::PxShape* shape = CreateShape(sphere);
 	data.renderItem = new RenderItem(shape, &data.pose, Col);
 	data.lifeTime = 0.0f;
+	data.force = Vector3(0, 0, 0);
+	data.inv_mass = inv_mass;
 }
 
 Particle::~Particle() {
@@ -48,11 +48,14 @@ Particle::~Particle() {
 
 void Particle::integrate(double t) {
 	//Euler semi-implícito
-	data.vel += data.acceleration * t;
+	Vector3 resultAccel = data.force * data.inv_mass;
+	data.vel += resultAccel * t;
+	data.vel *= powf(data.damping, t);
 	data.pose.p += data.vel * t;
-	data.vel *= pow(data.damping, t);
 
 	data.lifeTime += t;
+
+	clearForce();
 
 #ifdef DEBUG
 	std::cout << "POSICIÓN:(" << pose.p.x << "," << pose.p.y << "," << pose.p.z << ")\n";

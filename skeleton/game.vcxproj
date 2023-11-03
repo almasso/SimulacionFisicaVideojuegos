@@ -254,6 +254,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Generators\ForceGenerator.cpp" />
+    <ClCompile Include="Registries\ParticleForceRegistry.cpp" />
     <ClCompile Include="Utils\BoundingBox.cpp" />
     <ClCompile Include="callbacks.cpp" />
     <ClCompile Include="Particle\Firework.cpp" />
@@ -269,6 +270,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Generators\ForceGenerator.h" />
+    <ClInclude Include="Registries\ParticleForceRegistry.h" />
     <ClInclude Include="Utils\BoundingBox.h" />
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="checkMemoryLeaks.h" />
