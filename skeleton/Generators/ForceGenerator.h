@@ -18,3 +18,12 @@ protected:
 	double _duration = -1e10;
 };
 
+class GravityForceGenerator : public ForceGenerator {
+public:
+	GravityForceGenerator(const Vector3& g);
+	void updateForce(Particle* particle, double duration) override;
+	inline void setGravity(Vector3 g) { _gravity = g; }
+protected:
+	Vector3 _gravity;
+};
+
