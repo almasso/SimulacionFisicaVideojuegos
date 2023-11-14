@@ -1,5 +1,6 @@
 #pragma once
 #include "Particle.h"
+#include "../checkMemoryLeaks.h"
 #include "../Generators/ParticleGenerator.h"
 #include <list>
 

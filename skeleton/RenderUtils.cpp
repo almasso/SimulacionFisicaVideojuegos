@@ -4,6 +4,7 @@
 
 #include "core.hpp"
 #include "RenderUtils.hpp"
+#include "checkMemoryLeaks.h"
 
 
 using namespace physx;

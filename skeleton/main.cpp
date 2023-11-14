@@ -18,7 +18,9 @@
 #include "Particle/Projectile.h"
 #include "Extras/Plane.h"
 #include "Systems/ParticleSystem.h"
+#include "Systems/ProjectileSystem.h"
 #include "Generators/ParticleGenerator.h"
+#include "Generators/ForceGenerator.h"
 #include "checkMemoryLeaks.h"
 
 std::string display_text = "This is a test";
@@ -41,8 +43,6 @@ PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
-
-std::deque<Projectile*> projectiles;
 std::string bullet_text = "Bullet Mode";
 Projectile::ProjectileType projectile_mode = Projectile::ProjectileType::PROJECTILE_BULLET;
 std::unordered_map<Projectile::ProjectileType, Vector4> projectile_colors = {
@@ -59,6 +59,7 @@ std::unordered_map<Projectile::ProjectileType, float> defaultProjectileSize = {
 };
 Plane* plane;
 ParticleSystem* partSystem;
+ProjectileSystem* projSystem;
 
 #ifdef PARTICLE
 Particle* particle;
@@ -95,9 +96,14 @@ void initPhysics(bool interactive)
 
 	plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
 	BoundingBox bb(Vector3(-50, 0, -50), Vector3(50, 600, 50));
+	BoundingBox bb2(Vector3(-750, 0, -750), Vector3(750, 2000, 750));
 	partSystem = new ParticleSystem(bb);
-	partSystem->addParticleGenerator(new GaussianParticleGenerator(Particle::Particle_Type::NORMAL, "mainGaussianParticleGenerator", bb.bottomCenter(), Vector3(0.01f, 0.001f, 0.01f), Vector3(0, 50, 0.0f), Vector3(15, 20, 15), 5.0f, 5.0f));
+	projSystem = new ProjectileSystem(bb2);
+	//partSystem->addParticleGenerator(new GaussianParticleGenerator(Particle::Particle_Type::NORMAL, "mainGaussianParticleGenerator", bb.bottomCenter(), Vector3(0.01f, 0.001f, 0.01f), Vector3(0, 50, 0.0f), Vector3(15, 20, 15), 5.0f, 5.0f));
 	partSystem->addParticleGenerator(new UniformParticleGenerator(Particle::Particle_Type::NORMAL, "mainUniformParticleGenerator", bb.bottomCenter(), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f));
+	partSystem->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8, 0)));
+	partSystem->addForceGenerator(new ParticleDragGenerator(0.5f, 0.0f));
+	projSystem->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8, 0)));
 
 #ifdef PARTICLE
 	particle = new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 20);
@@ -111,6 +117,7 @@ void initPhysics(bool interactive)
 void stepPhysics(bool interactive, double t)
 {
 	partSystem->update(t);
+	projSystem->update(t);
 	switch (projectile_mode) {
 		case Projectile::ProjectileType::PROJECTILE_BULLET: bullet_text = "Bullet Mode"; break;
 		case Projectile::ProjectileType::PROJECTILE_CANNONBALL: bullet_text = "Cannonball Mode"; break;
@@ -125,31 +132,15 @@ void stepPhysics(bool interactive, double t)
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 
-	for (auto it = projectiles.begin(); it < projectiles.end();) {
-		if (*it) { //Si el proyectil existe...
-			(*it)->integrate(t);
-			if ((*it)->getPosition().p.y < 0.0f || (*it)->getPosition().p.x > 750.0f || (*it)->getPosition().p.x < -750.0f || (*it)->getPosition().p.z > 750.0f || (*it)->getPosition().p.z < -750.0f) {
-				delete (*it);
-				it = projectiles.erase(it);
-			}
-			else ++it;
-		}
-	}
-
 }
 
 // Function to clean data
 // Add custom code to the begining of the function
 void cleanupPhysics(bool interactive)
 {
-	for (int i = 0; i < projectiles.size(); ++i) {
-		auto e = projectiles.front();
-		projectiles.pop_front();
-		delete e;
-	}
-
 	delete plane;
 	delete partSystem;
+	delete projSystem;
 
 #ifdef PARTICLE
 	delete particle;
@@ -176,7 +167,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	switch(toupper(key)) {
 		case ' ':
 		{
-			projectiles.push_back(new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), defaultProjectileSpeeds.at(projectile_mode), defaultProjectileSize.at(projectile_mode), projectile_mode, projectile_colors.at(projectile_mode)));
+			projSystem->generateProjectile(new Projectile(GetCamera()->getTransform().p, GetCamera()->getDir(), defaultProjectileSpeeds.at(projectile_mode), defaultProjectileSize.at(projectile_mode), projectile_mode, projectile_colors.at(projectile_mode)));
 			break;
 		}
 		case 'B': {

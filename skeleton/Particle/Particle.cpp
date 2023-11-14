@@ -44,6 +44,7 @@ Particle::Particle(Particle_Type type, float inv_mass, Vector3 pos, Vector3 vel,
 
 Particle::~Particle() {
 	if(data.renderItem != nullptr) data.renderItem->release();
+
 }
 
 void Particle::integrate(double t) {

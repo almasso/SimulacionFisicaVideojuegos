@@ -1,4 +1,5 @@
 #include "Firework.h"
+#include "../checkMemoryLeaks.h"
 
 std::list<Particle*> Firework::explode() {
 	std::list<Particle*> tmp;

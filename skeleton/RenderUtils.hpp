@@ -3,6 +3,7 @@
 
 #include "PxPhysicsAPI.h"
 #include "core.hpp"
+#include "checkMemoryLeaks.h"
 
 class RenderItem;
 void RegisterRenderItem(const RenderItem* _item);
