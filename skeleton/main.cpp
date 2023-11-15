@@ -60,8 +60,8 @@ std::unordered_map<Projectile::ProjectileType, float> defaultProjectileSize = {
 Plane* plane;
 ParticleSystem* partSystem;
 ProjectileSystem* projSystem;
-BoundingBox* bb = new BoundingBox(Vector3(-50, 0, -50), Vector3(50, 600, 50), true);
-BoundingBox* bb2 = new BoundingBox(Vector3(-750, 0, -750), Vector3(750, 2000, 750));
+BoundingBox* bb;
+BoundingBox* bb2;
 
 
 #ifdef PARTICLE
@@ -97,14 +97,15 @@ void initPhysics(bool interactive)
 
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
-	plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
-	bb2->hide();
+	//plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
+	bb = new BoundingBox(Vector3(-50, 0, -50), Vector3(50, 150, 50), true);
+	bb2 = new BoundingBox(Vector3(-750, 0, -750), Vector3(750, 2000, 750));
 	partSystem = new ParticleSystem(*bb);
 	projSystem = new ProjectileSystem(*bb2);
-	//partSystem->addParticleGenerator(new GaussianParticleGenerator(Particle::Particle_Type::NORMAL, "mainGaussianParticleGenerator", bb.bottomCenter(), Vector3(0.01f, 0.001f, 0.01f), Vector3(0, 50, 0.0f), Vector3(15, 20, 15), 5.0f, 5.0f));
-	partSystem->addParticleGenerator(new UniformParticleGenerator(Particle::Particle_Type::NORMAL, "mainUniformParticleGenerator", bb->bottomCenter(), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f));
-	//partSystem->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8, 0)));
-	partSystem->addForceGenerator(new ParticleDragGenerator(Vector3(-100 ,0, 70), 0.5f, 0.0f));
+	partSystem->addParticleGenerator(new GaussianParticleGenerator(Particle::Particle_Type::NORMAL, "mainGaussianParticleGenerator", bb->bottomCenter(), Vector3(0.01f, 0.001f, 0.01f), Vector3(0, 50, 0.0f), Vector3(15, 20, 15), 5.0f, 5.0f));
+	//partSystem->addParticleGenerator(new UniformParticleGenerator(Particle::Particle_Type::NORMAL, "mainUniformParticleGenerator", bb->bottomCenter(), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f));
+	partSystem->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8, 0)));
+	//partSystem->addForceGenerator(new ParticleDragGenerator(Vector3(-100 ,0, 70), 0.5f, 0.0f));
 	projSystem->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8, 0)));
 
 #ifdef PARTICLE
@@ -180,6 +181,10 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		}
 		case 'F': {
 			partSystem->generateFirework(Vector3(0, 0, 0), Vector3(0, 50, 0), 4, 0.998f, Vector4(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1));
+			break;
+		}
+		case 'M': {
+			bb->isShowing() ? bb->hide() : bb->show();
 			break;
 		}
 		default:

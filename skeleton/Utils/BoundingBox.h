@@ -2,18 +2,27 @@
 #include "../RenderUtils.hpp"
 #include "../checkMemoryLeaks.h"
 #include <vector>
+#include <iostream>
 
 using Point = Vector3;
 class BoundingBox {
 private:
 	Point _minimum;
 	Point _maximum;
-	RenderItem* boundingLine;
+	std::vector<RenderItem*> boundingLines;
+	std::vector<RenderItem*> corners;
+	std::vector<physx::PxTransform> cornerTransforms;
+	std::vector<physx::PxTransform> bLTransforms;
+	void generateCorners();
+	void generateEdges();
+	bool _showing;
 
 public:
 	BoundingBox() : BoundingBox(Point(0,0,0), Point(0,0,0)) {}
-	BoundingBox(const Point& minimum, const Point& maximum, bool showBB = false) : _minimum(minimum), _maximum(maximum), boundingLine(nullptr) {
-		if(showBB) show();
+	BoundingBox(const Point& minimum, const Point& maximum, bool showBB = false) : _minimum(minimum), _maximum(maximum), boundingLines(12,nullptr), corners(8, nullptr), cornerTransforms(8), bLTransforms(12), _showing(showBB) {
+		if (showBB) {
+			show();
+		}
 	}
 
 	~BoundingBox() {
@@ -30,37 +39,23 @@ public:
 
 	bool isInBoundingBox(const Vector3& pos) const;
 
+	bool isShowing() const { return _showing; }
+
 	inline void show() { 
-		physx::PxBoxGeometry cube(_maximum - _minimum);
-		physx::PxShape* shape = CreateShape(cube);
-		boundingLine = new RenderItem(shape, &physx::PxTransform(_minimum), Vector4(1,1,1,0));
-		////X != 1, Y = 1, Z = 1
-		//physx::PxBoxGeometry xNN(Vector3(_maximum.x - _minimum.x, 10, 10));
-		//physx::PxShape* xNNS = CreateShape(xNN);
-		////X = 1, Y != 1, Z = 1
-		//physx::PxBoxGeometry yNN(Vector3(10, _maximum.y - _minimum.y, 10));
-		//physx::PxShape* yNNS = CreateShape(yNN);
-		////X = 1, Y = 1, Z != 1
-		//physx::PxBoxGeometry zNN(Vector3(10, 10, _maximum.z - _minimum.z));
-		//physx::PxShape* zNNS = CreateShape(zNN);
-
-		//boundingLines[0] = new RenderItem(xNNS, &physx::PxTransform(_minimum), Vector4(1, 1, 1, 1)); //(minX, minY, minZ)
-		//boundingLines[1] = new RenderItem(xNNS, &physx::PxTransform(Vector3(_minimum.x, _minimum.y, _maximum.z)), Vector4(1, 1, 1, 1)); //(minX, minY, maxZ)
-		//boundingLines[2] = new RenderItem(xNNS, &physx::PxTransform(Vector3(_minimum.x, _maximum.y, _minimum.z)), Vector4(1, 1, 1, 1)); //(minX, maxY, minZ)
-		//boundingLines[3] = new RenderItem(xNNS, &physx::PxTransform(Vector3(_minimum.x, _maximum.y, _maximum.z)), Vector4(1, 1, 1, 1)); //(minX, maxY, maxZ)
-
-		//boundingLines[4] = new RenderItem(yNNS, &physx::PxTransform(_minimum), Vector4(1, 1, 1, 1)); //(minX, minY, minZ)
-		//boundingLines[5] = new RenderItem(yNNS, &physx::PxTransform(Vector3(_maximum.x, _minimum.y, _minimum.z)), Vector4(1, 1, 1, 1)); //(maxX, minY, minZ)
-		//boundingLines[6] = new RenderItem(yNNS, &physx::PxTransform(Vector3(_maximum.x, _minimum.y, _maximum.z)), Vector4(1, 1, 1, 1)); //(maxX, minY, maxZ)
-		//boundingLines[7] = new RenderItem(yNNS, &physx::PxTransform(Vector3(_minimum.x, _minimum.y, _maximum.z)), Vector4(1, 1, 1, 1)); //(minX, minY, maxZ)
-
-		//boundingLines[8] = new RenderItem(zNNS, &physx::PxTransform(_minimum), Vector4(1, 1, 1, 1)); //(minX, minY, minZ)
-		//boundingLines[9] = new RenderItem(zNNS, &physx::PxTransform(Vector3(_maximum.x, _minimum.y, _minimum.z)), Vector4(1, 1, 1, 1)); //(maxX, minY, minZ)
-		//boundingLines[10] = new RenderItem(zNNS, &physx::PxTransform(Vector3(_minimum.x, _maximum.y, _minimum.z)), Vector4(1, 1, 1, 1)); //(minX, maxY, minZ)
-		//boundingLines[11] = new RenderItem(zNNS, &physx::PxTransform(Vector3(_maximum.x, _maximum.y, _minimum.z)), Vector4(1, 1, 1, 1)); //(maxX, maxY, minZ)
+		generateCorners();
+		generateEdges();
+		_showing = true;
 	}
-	void hide() { 
-		 boundingLine->release();
+
+	inline void hide() {
+		for (auto e : corners) {
+			if (e) e->release();
+		}
+
+		for (auto b : boundingLines) {
+			if (b) b->release();
+		}
+		_showing = false;
 	}
 };
 
