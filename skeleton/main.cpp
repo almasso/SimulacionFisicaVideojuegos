@@ -99,14 +99,15 @@ void initPhysics(bool interactive)
 
 	//plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
 	bbReg = new BoundingBoxRegistry();
-	bbReg->addRegistry("particleSysBB", new BoundingBox(Vector3(-50, 0, -50), Vector3(50, 150, 50)));
+	bbReg->addRegistry("particleSysBB", new BoundingBox(Vector3(-200, 0, -200), Vector3(200, 300, 200)));
 	bbReg->addRegistry("projectileBB", new BoundingBox(Vector3(-750, 0, -750), Vector3(750, 2000, 750)));
 	partSystem = new ParticleSystem(*(bbReg->at("particleSysBB")));
 	projSystem = new ProjectileSystem(*(bbReg->at("projectileBB")));
 	//partSystem->addParticleGenerator(new GaussianParticleGenerator(Particle::Particle_Type::NORMAL, "mainGaussianParticleGenerator", (bbReg->at("particleSysBB"))->bottomCenter(), Vector3(0.01f, 0.001f, 0.01f), Vector3(0, 50, 0.0f), Vector3(15, 20, 15), 5.0f, 5.0f));
 	partSystem->addParticleGenerator(new UniformParticleGenerator(Particle::Particle_Type::NORMAL, "mainUniformParticleGenerator",(bbReg->at("particleSysBB"))->bottomCenter(), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f));
 	partSystem->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8, 0)));
-	//partSystem->addForceGenerator(new ParticleDragGenerator(Vector3(-100 ,0, 70), 0.5f, 0.0f));
+	partSystem->addForceGenerator(new ParticleDragGenerator(Vector3(-100 ,0, 70), 0.5f, 0.0f));
+	partSystem->addForceGenerator(new WhirlpoolGenerator(bbReg->at("particleSysBB")->center(), 0.7, 4));
 	projSystem->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8, 0)));
 
 #ifdef PARTICLE

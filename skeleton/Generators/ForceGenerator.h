@@ -41,7 +41,18 @@ public:
 	inline float getK2() const { return _k2; }
 };
 
-class WhirlpoolGenerator : public ParticleDragGenerator {
+class WhirlpoolGenerator : public ForceGenerator {
+private:
+	Vector3 _whirlpoolSpeed;
+	Vector3 _whirlpoolCenter;
+	float _k;
+	float _k1;
+public:
+	WhirlpoolGenerator(Vector3 center, float K, float k1) : _whirlpoolCenter(center), _k(K), _k1(k1) {}
+	void updateForce(Particle* particle, double duration);
+};
+
+class ExplosionGenerator : public ForceGenerator {
 private:
 
 };

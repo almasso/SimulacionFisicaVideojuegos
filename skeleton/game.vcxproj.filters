@@ -20,7 +20,6 @@
     <ClCompile Include="Generators\ForceGenerator.cpp" />
     <ClCompile Include="Registries\ParticleForceRegistry.cpp" />
     <ClCompile Include="Systems\ProjectileSystem.cpp" />
-    <ClCompile Include="Registries\BoundingBoxRegistry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
