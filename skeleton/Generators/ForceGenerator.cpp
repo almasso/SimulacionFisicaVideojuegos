@@ -12,9 +12,6 @@ void ParticleDragGenerator::updateForce(Particle* p, double duration) {
 	if (fabs(p->getData().inv_mass) < 1e-10) return;
 
 	Vector3 v = p->getData().vel;
-	float drag_coef = v.normalize();
-	Vector3 dragF;
-	drag_coef = _k1 * drag_coef + _k2 * drag_coef * drag_coef;
-	dragF = -v * drag_coef;
+	Vector3 dragF = _k1 * (_windSpeed - v) + _k2 * (_windSpeed - v).magnitude() * (_windSpeed - v);
 	p->addForce(dragF);
 }

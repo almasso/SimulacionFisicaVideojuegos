@@ -19,11 +19,7 @@ public:
 	void addRegistry(std::list<Particle*> ps, std::vector<ForceGenerator*> fgs);
 	
 	inline void deleteParticleRegistry(Particle* p) {
-		auto it = this->find(p);
-		while (it != this->end()) {
-			this->erase(it);
-			it = this->find(p);
-		}
+		this->erase(p);
 	}
 };
 

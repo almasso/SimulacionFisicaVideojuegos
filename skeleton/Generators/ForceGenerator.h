@@ -32,11 +32,17 @@ class ParticleDragGenerator : public ForceGenerator {
 private:
 	float _k1;
 	float _k2;
+	Vector3 _windSpeed;
 public:
-	ParticleDragGenerator(const float k1, const float k2) { setDrag(k1, k2); }
+	ParticleDragGenerator(Vector3 windSpeed, const float k1, const float k2) : _windSpeed(windSpeed) { setDrag(k1, k2); }
 	void updateForce(Particle* particle, double duration) override;
 	inline void setDrag(float k1, float k2) { _k1 = k1; _k2 = k2; }
 	inline float getK1() const { return _k1; }
 	inline float getK2() const { return _k2; }
+};
+
+class WhirlpoolGenerator : public ParticleDragGenerator {
+private:
+
 };
 
