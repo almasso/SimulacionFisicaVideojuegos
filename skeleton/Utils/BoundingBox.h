@@ -35,7 +35,7 @@ public:
 	inline Point center() const { return dimensions() / 2; }
 	inline Point bottomCenter() const { return Point(center().x, minimum().y, center().z); }
 	inline Point topCenter() const { return Point(center().x, maximum().y, center().z); }
-	inline Vector3 dimensions() const { return (_maximum - _minimum); }
+	inline Vector3 dimensions() const { return (_maximum - Vector3(fabs(_minimum.x), fabs(_minimum.y), fabs(_minimum.z))); }
 
 	bool isInBoundingBox(const Vector3& pos) const;
 

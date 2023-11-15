@@ -21,6 +21,7 @@
 #include "Systems/ProjectileSystem.h"
 #include "Generators/ParticleGenerator.h"
 #include "Generators/ForceGenerator.h"
+#include "Registries/BoundingBoxRegistry.h"
 #include "checkMemoryLeaks.h"
 
 std::string display_text = "This is a test";
@@ -60,8 +61,7 @@ std::unordered_map<Projectile::ProjectileType, float> defaultProjectileSize = {
 Plane* plane;
 ParticleSystem* partSystem;
 ProjectileSystem* projSystem;
-BoundingBox* bb;
-BoundingBox* bb2;
+BoundingBoxRegistry* bbReg;
 
 
 #ifdef PARTICLE
@@ -98,12 +98,13 @@ void initPhysics(bool interactive)
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
 	//plane = new Plane(Vector3(0, 0, 0), Vector3(5000.0f,0.5f,5000.0f), Vector4(1,0,0,1));
-	bb = new BoundingBox(Vector3(-50, 0, -50), Vector3(50, 150, 50), true);
-	bb2 = new BoundingBox(Vector3(-750, 0, -750), Vector3(750, 2000, 750));
-	partSystem = new ParticleSystem(*bb);
-	projSystem = new ProjectileSystem(*bb2);
-	partSystem->addParticleGenerator(new GaussianParticleGenerator(Particle::Particle_Type::NORMAL, "mainGaussianParticleGenerator", bb->bottomCenter(), Vector3(0.01f, 0.001f, 0.01f), Vector3(0, 50, 0.0f), Vector3(15, 20, 15), 5.0f, 5.0f));
-	//partSystem->addParticleGenerator(new UniformParticleGenerator(Particle::Particle_Type::NORMAL, "mainUniformParticleGenerator", bb->bottomCenter(), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f));
+	bbReg = new BoundingBoxRegistry();
+	bbReg->addRegistry("particleSysBB", new BoundingBox(Vector3(-50, 0, -50), Vector3(50, 150, 50)));
+	bbReg->addRegistry("projectileBB", new BoundingBox(Vector3(-750, 0, -750), Vector3(750, 2000, 750)));
+	partSystem = new ParticleSystem(*(bbReg->at("particleSysBB")));
+	projSystem = new ProjectileSystem(*(bbReg->at("projectileBB")));
+	//partSystem->addParticleGenerator(new GaussianParticleGenerator(Particle::Particle_Type::NORMAL, "mainGaussianParticleGenerator", (bbReg->at("particleSysBB"))->bottomCenter(), Vector3(0.01f, 0.001f, 0.01f), Vector3(0, 50, 0.0f), Vector3(15, 20, 15), 5.0f, 5.0f));
+	partSystem->addParticleGenerator(new UniformParticleGenerator(Particle::Particle_Type::NORMAL, "mainUniformParticleGenerator",(bbReg->at("particleSysBB"))->bottomCenter(), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f));
 	partSystem->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8, 0)));
 	//partSystem->addForceGenerator(new ParticleDragGenerator(Vector3(-100 ,0, 70), 0.5f, 0.0f));
 	projSystem->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8, 0)));
@@ -144,8 +145,13 @@ void cleanupPhysics(bool interactive)
 	delete plane;
 	delete partSystem;
 	delete projSystem;
-	delete bb2;
-	delete bb;
+	
+	for (auto it = bbReg->begin(); it != bbReg->end();) {
+		BoundingBox* tmp = it->second;
+		it = bbReg->erase(it);
+		delete tmp;
+	}
+	delete bbReg;
 
 #ifdef PARTICLE
 	delete particle;
@@ -184,7 +190,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 			break;
 		}
 		case 'M': {
-			bb->isShowing() ? bb->hide() : bb->show();
+			for (auto it = bbReg->begin(); it != bbReg->end(); ++it) {
+				it->second->isShowing() ? it->second->hide() : it->second->show();
+			}
 			break;
 		}
 		default:
