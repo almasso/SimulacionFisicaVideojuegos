@@ -46,3 +46,8 @@ void ParticleSystem::generateFirework(Vector3 genPos, Vector3 vel, int gen, floa
 	_particleRegistry.addRegistry(tmp, _forces);
 	_particles.push_back(tmp);
 }
+
+void ParticleSystem::generateExplosion(BoundingBox* bb) {
+	addForceGenerator(new ExplosionGenerator(bb->center(), 100000, 200));
+	_particleRegistry.addRegistry(_particles, _forces[_forces.size() - 1]);
+}

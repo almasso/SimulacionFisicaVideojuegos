@@ -1,6 +1,7 @@
 #pragma once
 #include "../RenderUtils.hpp"
 #include "../checkMemoryLeaks.h"
+#include "../Utils/BoundingBox.h"
 using Force = Vector3;
 class Particle;
 
@@ -33,8 +34,9 @@ private:
 	float _k1;
 	float _k2;
 	Vector3 _windSpeed;
+	BoundingBox zone;
 public:
-	ParticleDragGenerator(Vector3 windSpeed, const float k1, const float k2) : _windSpeed(windSpeed) { setDrag(k1, k2); }
+	ParticleDragGenerator(BoundingBox& zone, Vector3 windSpeed, const float k1, const float k2) : _windSpeed(windSpeed), zone(zone) { setDrag(k1, k2); }
 	void updateForce(Particle* particle, double duration) override;
 	inline void setDrag(float k1, float k2) { _k1 = k1; _k2 = k2; }
 	inline float getK1() const { return _k1; }
@@ -47,13 +49,22 @@ private:
 	Vector3 _whirlpoolCenter;
 	float _k;
 	float _k1;
+	BoundingBox zone;
 public:
-	WhirlpoolGenerator(Vector3 center, float K, float k1) : _whirlpoolCenter(center), _k(K), _k1(k1) {}
-	void updateForce(Particle* particle, double duration);
+	WhirlpoolGenerator(BoundingBox& zone, Vector3 center, float K, float k1) : _whirlpoolCenter(center), zone(zone), _k(K), _k1(k1) {}
+	void updateForce(Particle* particle, double duration) override;
 };
 
 class ExplosionGenerator : public ForceGenerator {
 private:
-
+	Vector3 explosionCenter;
+	float explosionRadius = 20000;
+	float K;
+	float tau;
+	double time = 0;
+	static Vector3 explosionSpeed;
+public:
+	ExplosionGenerator(Vector3 explosionCenter, float K, float tau) : explosionCenter(explosionCenter), explosionRadius(explosionRadius), K(K), tau(tau) {}
+	void updateForce(Particle* particle, double duration) override;
 };
 

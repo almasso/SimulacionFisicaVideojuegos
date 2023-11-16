@@ -21,6 +21,7 @@ protected:
 	std::vector<ForceGenerator*> _forces;
 
 	BoundingBox _bb;
+	bool explosionGenerated = false;
 	
 public:
 	ParticleSystem(const BoundingBox& bb) : _bb(bb) {}
@@ -30,5 +31,6 @@ public:
 	inline void addForceGenerator(ForceGenerator* fG) { _forces.push_back(fG); }
 	ParticleGenerator* getParticleGenerator(std::string name);
 	void generateFirework(Vector3 genPos, Vector3 vel, int gen = 4, float damping = 0.998f, Vector4 col = { 0,1,0,1 });
+	void generateExplosion(BoundingBox* bb);
 };
 

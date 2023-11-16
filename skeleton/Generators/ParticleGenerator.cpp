@@ -78,7 +78,7 @@ std::list<Particle*> UniformParticleGenerator::generateParticles(int numParticle
 	std::list<Particle*> tmp;
 	for (int i = 0; i < numParticles; ++i) {
 		Particle::particle_data data = models[rand() % models.size()]->getData();
-		Particle* partTmp = new Particle(data.type, 1.0, Vector3((*pX)(gen), (*pY)(gen), (*pZ)(gen)), Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen)), data.damping, data.colour);
+		Particle* partTmp = new Particle(data.type, 1, Vector3((*pX)(gen), (*pY)(gen), (*pZ)(gen)), Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen)), data.damping, data.colour);
 		partTmp->setLifeTime((*t)(gen));
 		tmp.push_back(partTmp);
 	}
