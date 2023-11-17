@@ -106,11 +106,11 @@ void initPhysics(bool interactive)
 	partSystem = new ParticleSystem(*(bbReg->at("particleSysBB")));
 	projSystem = new ProjectileSystem(*(bbReg->at("projectileBB")));
 	//partSystem->addParticleGenerator(new GaussianParticleGenerator(Particle::Particle_Type::NORMAL, "mainGaussianParticleGenerator", (bbReg->at("particleSysBB"))->bottomCenter(), Vector3(0.01f, 0.001f, 0.01f), Vector3(0, 50, 0.0f), Vector3(15, 20, 15), 5.0f, 5.0f));
-	partSystem->addParticleGenerator(new UniformParticleGenerator(Particle::Particle_Type::NORMAL, "mainUniformParticleGenerator",(bbReg->at("particleSysBB"))->bottomCenter(), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f));
+	//partSystem->addParticleGenerator(new UniformParticleGenerator(Particle::Particle_Type::NORMAL, "mainUniformParticleGenerator",(bbReg->at("particleSysBB"))->bottomCenter(), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f));
 	
-	partSystem->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8, 0)));
-	partSystem->addForceGenerator(new ParticleDragGenerator(*(bbReg->at("dragAppBB")), Vector3(-100, 0, 70), 0.5f, 0.0f));
-	partSystem->addForceGenerator(new WhirlpoolGenerator(*(bbReg->at("whirlpoolAppBB")), bbReg->at("particleSysBB")->center(), 0.7, 4));
+	//partSystem->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8, 0)));
+	//partSystem->addForceGenerator(new ParticleDragGenerator(*(bbReg->at("dragAppBB")), Vector3(-100, 0, 70), 0.5f, 0.0f));
+	//partSystem->addForceGenerator(new WhirlpoolGenerator(*(bbReg->at("whirlpoolAppBB")), bbReg->at("particleSysBB")->center(), 0.7, 4));
 	projSystem->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8, 0)));
 
 #ifdef PARTICLE
@@ -195,6 +195,10 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		}
 		case 'F': {
 			partSystem->generateFirework(Vector3(0, 0, 0), Vector3(0, 50, 0), 4, 0.998f, Vector4(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1));
+			break;
+		}
+		case 'K': {
+			partSystem->generateSpringDemo();
 			break;
 		}
 		case 'M': {

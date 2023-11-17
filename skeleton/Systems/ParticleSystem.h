@@ -32,5 +32,6 @@ public:
 	ParticleGenerator* getParticleGenerator(std::string name);
 	void generateFirework(Vector3 genPos, Vector3 vel, int gen = 4, float damping = 0.998f, Vector4 col = { 0,1,0,1 });
 	void generateExplosion(BoundingBox* bb);
+	void generateSpringDemo();
 };
 

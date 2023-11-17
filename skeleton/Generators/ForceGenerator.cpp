@@ -37,3 +37,18 @@ void ExplosionGenerator::updateForce(Particle* p, double duration) {
 	Vector3 force = (K / (r * r)) * (p->getData().pose.p - explosionCenter) * exp(-_t / tau);
 	p->addForce(force);
 }
+
+void SpringForceGenerator::updateForce(Particle* p, double duration) {
+	Vector3 relative_pos_vector = _other->getData().pose.p - p->getData().pose.p;
+	Vector3 force;
+
+	const float length = relative_pos_vector.normalize();
+	const float delta_x = length - _resting_length;
+
+	force = relative_pos_vector * delta_x * _k;
+	p->addForce(force);
+}
+
+AnchoredSpringFG::AnchoredSpringFG(double k, double resting, const Vector3& anchor_pos) : SpringForceGenerator(k, resting, nullptr) {
+	_other = new Particle(Particle::Particle_Type::NORMAL, 0, Vector3(0, 0, 0), Vector3(0, 0, 0), 0, Vector4(0, 0, 0, 0));
+}

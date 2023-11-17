@@ -67,3 +67,22 @@ public:
 	void updateForce(Particle* particle, double duration) override;
 };
 
+class SpringForceGenerator : public ForceGenerator {
+public:
+	SpringForceGenerator(double k, double resting_length, Particle* other) : _k(k), _resting_length(resting_length), _other(other) {}
+	void updateForce(Particle*, double duration) override;
+	inline void setK(double k) { _k = k; }
+protected:
+	double _k;
+	double _resting_length;
+	Particle* _other;
+};
+
+class AnchoredSpringFG : public SpringForceGenerator {
+public:
+	AnchoredSpringFG(double k, double resting, const Vector3& anchor_pos);
+	~AnchoredSpringFG() {
+		delete _other;
+	}
+};
+

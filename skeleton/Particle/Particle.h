@@ -32,6 +32,7 @@ public:
 	inline particle_data getData() const { return data; }
 	inline void setData(const particle_data& data) { this->data = data; }
 	inline void setPosition(Vector3 position) { this->data.pose = physx::PxTransform(position); }
+	inline void setInverseMass(float inverse_mass) { this->data.inv_mass = inverse_mass; }
 	inline void setVelocity(Vector3 velocity) { this->data.vel = velocity; }
 	inline void addForce(const Force& f) { data.force += f; }
 
