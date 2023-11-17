@@ -58,10 +58,9 @@ public:
 class ExplosionGenerator : public ForceGenerator {
 private:
 	Vector3 explosionCenter;
-	float explosionRadius = 20000;
+	float explosionRadius = 20;
 	float K;
 	float tau;
-	double time = 0;
 	static Vector3 explosionSpeed;
 public:
 	ExplosionGenerator(Vector3 explosionCenter, float K, float tau) : explosionCenter(explosionCenter), explosionRadius(explosionRadius), K(K), tau(tau) {}

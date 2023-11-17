@@ -30,11 +30,10 @@ void WhirlpoolGenerator::updateForce(Particle* p, double duration) {
 Vector3 ExplosionGenerator::explosionSpeed = Vector3(100, 100, 100);
 
 void ExplosionGenerator::updateForce(Particle* p, double duration) {
-	time += duration;
-	explosionRadius = explosionSpeed.magnitude() * time;
+	//explosionRadius = explosionSpeed.magnitude() * _t;
 	float r = (p->getData().pose.p - explosionCenter).magnitude();
-	if (fabs(p->getData().inv_mass) < 1e-10 || time >= 4 * tau || r >= explosionRadius) return;
+	if (fabs(p->getData().inv_mass) < 1e-10 || _t >= 4 * tau) return;
 
-	Vector3 force = (K / (r * r)) * (p->getData().pose.p - explosionCenter) * exp(-time / tau);
+	Vector3 force = (K / (r * r)) * (p->getData().pose.p - explosionCenter) * exp(-_t / tau);
 	p->addForce(force);
 }

@@ -38,6 +38,7 @@ void ParticleSystem::update(double t) {
 		_particleRegistry.addRegistry(ptcls, _forces);
 		_particles.splice(_particles.end(), ptcls);
 	}
+	for (auto f : _forces) f->updateTime(t);
 	_particleRegistry.updateForces(t);
 }
 
@@ -48,6 +49,6 @@ void ParticleSystem::generateFirework(Vector3 genPos, Vector3 vel, int gen, floa
 }
 
 void ParticleSystem::generateExplosion(BoundingBox* bb) {
-	addForceGenerator(new ExplosionGenerator(bb->center(), 100000, 200));
+	addForceGenerator(new ExplosionGenerator(bb->center(), 200000, 1));
 	_particleRegistry.addRegistry(_particles, _forces[_forces.size() - 1]);
 }
