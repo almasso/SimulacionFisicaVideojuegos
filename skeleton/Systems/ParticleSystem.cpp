@@ -14,6 +14,10 @@ ParticleSystem::~ParticleSystem() {
 }
 
 void ParticleSystem::update(double t) {
+	for(auto f : _forces) f->updateTime(t);
+	_particleRegistry.updateForces(t);
+
+
 	for (auto it = _particles.begin(); it != _particles.end();) {
 		(*it)->integrate(t);
 		
@@ -38,8 +42,6 @@ void ParticleSystem::update(double t) {
 		_particleRegistry.addRegistry(ptcls, _forces);
 		_particles.splice(_particles.end(), ptcls);
 	}
-	for (auto f : _forces) f->updateTime(t);
-	_particleRegistry.updateForces(t);
 }
 
 void ParticleSystem::generateFirework(Vector3 genPos, Vector3 vel, int gen, float damping, Vector4 col) {
