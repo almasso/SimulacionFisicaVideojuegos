@@ -14,7 +14,7 @@ ParticleSystem::~ParticleSystem() {
 }
 
 void ParticleSystem::update(double t) {
-	for(auto f : _forces) f->updateTime(t);
+	for(auto e : _forces) e->updateTime(t);
 	_particleRegistry.updateForces(t);
 
 
@@ -42,6 +42,19 @@ void ParticleSystem::update(double t) {
 		_particleRegistry.addRegistry(ptcls, _forces);
 		_particles.splice(_particles.end(), ptcls);
 	}
+	
+	std::list<message::Message> msgs = message::MessageManager::receiveMessages((int)message::msgID::_m_GENERATOR_ERASABLE);
+	for (auto it = msgs.begin(); it != msgs.end(); ++it) {
+		_particleRegistry.deleteInstancesOfForceGenerator(it->genData.fg);
+		for (auto ot = _forces.begin(); ot != _forces.end();) {
+			if ((*ot) == it->genData.fg) {
+				auto e = (*ot);
+				ot = _forces.erase(ot);
+				delete e;
+			}
+			else ++ot;
+		}
+	}
 }
 
 void ParticleSystem::generateFirework(Vector3 genPos, Vector3 vel, int gen, float damping, Vector4 col) {
@@ -51,7 +64,7 @@ void ParticleSystem::generateFirework(Vector3 genPos, Vector3 vel, int gen, floa
 }
 
 void ParticleSystem::generateExplosion(BoundingBox* bb) {
-	addForceGenerator(new ExplosionGenerator(bb->center(), 200000, 1));
+	addForceGenerator(new ExplosionGenerator(bb->center(), 200000, 0.5f));
 	_particleRegistry.addRegistry(_particles, _forces[_forces.size() - 1]);
 }
 

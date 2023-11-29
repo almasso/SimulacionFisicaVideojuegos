@@ -32,7 +32,15 @@ Vector3 ExplosionGenerator::explosionSpeed = Vector3(100, 100, 100);
 void ExplosionGenerator::updateForce(Particle* p, double duration) {
 	//explosionRadius = explosionSpeed.magnitude() * _t;
 	float r = (p->getData().pose.p - explosionCenter).magnitude();
-	if (fabs(p->getData().inv_mass) < 1e-10 || _t >= 4 * tau) return;
+	if (fabs(p->getData().inv_mass) < 1e-10) return; 
+	
+	if( _t >= 4 * tau && !messageSent) {
+		message::Message m((int)message::msgID::_m_GENERATOR_ERASABLE);
+		m.genData.fg = this;
+		message::MessageManager::sendMessage(m);
+		messageSent = true;
+		return;
+	}
 
 	Vector3 force = (K / (r * r)) * (p->getData().pose.p - explosionCenter) * exp(-_t / tau);
 	p->addForce(force);

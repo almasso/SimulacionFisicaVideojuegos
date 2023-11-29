@@ -1,5 +1,6 @@
 #include "ParticleForceRegistry.h"
 #include "../checkMemoryLeaks.h"
+#include <iostream>
 
 void ParticleForceRegistry::addRegistry(std::list<Particle*> ps, ForceGenerator* fg) {
 	int tmp = ps.size();
@@ -22,5 +23,12 @@ void ParticleForceRegistry::addRegistry(std::list<Particle*> ps, std::vector<For
 void ParticleForceRegistry::addRegistry(Particle* p, std::vector<ForceGenerator*> fgs) {
 	for (int i = 0; i < fgs.size(); ++i) {
 		this->insert({ p, fgs[i] });
+	}
+}
+
+void ParticleForceRegistry::deleteInstancesOfForceGenerator(const ForceGenerator* const fg) {
+	for (auto it = this->begin(); it != this->end();) {
+		if (it->second == fg) it = this->erase(it);
+		else ++it;
 	}
 }

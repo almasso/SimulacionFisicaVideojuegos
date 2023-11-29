@@ -21,5 +21,7 @@ public:
 	inline void deleteParticleRegistry(Particle* p) {
 		this->erase(p);
 	}
+
+	void deleteInstancesOfForceGenerator(const ForceGenerator* const fg);
 };
 

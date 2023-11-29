@@ -2,6 +2,7 @@
 #include "../RenderUtils.hpp"
 #include "../checkMemoryLeaks.h"
 #include "../Utils/BoundingBox.h"
+#include "../Messages/Message.h"
 using Force = Vector3;
 class Particle;
 
@@ -62,6 +63,7 @@ private:
 	float K;
 	float tau;
 	static Vector3 explosionSpeed;
+	bool messageSent = false;
 public:
 	ExplosionGenerator(Vector3 explosionCenter, float K, float tau) : explosionCenter(explosionCenter), explosionRadius(explosionRadius), K(K), tau(tau) {}
 	void updateForce(Particle* particle, double duration) override;

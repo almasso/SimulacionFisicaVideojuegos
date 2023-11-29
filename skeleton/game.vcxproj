@@ -254,6 +254,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Generators\ForceGenerator.cpp" />
+    <ClCompile Include="Messages\Message.cpp" />
     <ClCompile Include="Systems\ProjectileSystem.cpp" />
     <ClCompile Include="Registries\ParticleForceRegistry.cpp" />
     <ClCompile Include="Utils\BoundingBox.cpp" />
@@ -270,6 +271,7 @@
     <ClCompile Include="Render\Render.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Messages\Message.h" />
     <ClInclude Include="Registries\BoundingBoxRegistry.h" />
     <ClInclude Include="Generators\ForceGenerator.h" />
     <ClInclude Include="Systems\ProjectileSystem.h" />

@@ -2,6 +2,7 @@
 #include <list>
 #include <string>
 #include <vector>
+#include "../Messages/Message.h"
 #include "../Particle/Particle.h"
 #include "../Particle/Firework.h"
 #include "../Utils/BoundingBox.h"
