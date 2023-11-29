@@ -35,9 +35,9 @@ private:
 	float _k1;
 	float _k2;
 	Vector3 _windSpeed;
-	BoundingBox zone;
+	BoundingBox* zone;
 public:
-	ParticleDragGenerator(BoundingBox& zone, Vector3 windSpeed, const float k1, const float k2) : _windSpeed(windSpeed), zone(zone) { setDrag(k1, k2); }
+	ParticleDragGenerator(BoundingBox* zone, Vector3 windSpeed, const float k1, const float k2) : _windSpeed(windSpeed), zone(zone) { setDrag(k1, k2); }
 	void updateForce(Particle* particle, double duration) override;
 	inline void setDrag(float k1, float k2) { _k1 = k1; _k2 = k2; }
 	inline float getK1() const { return _k1; }
@@ -50,9 +50,9 @@ private:
 	Vector3 _whirlpoolCenter;
 	float _k;
 	float _k1;
-	BoundingBox zone;
+	BoundingBox* zone;
 public:
-	WhirlpoolGenerator(BoundingBox& zone, Vector3 center, float K, float k1) : _whirlpoolCenter(center), zone(zone), _k(K), _k1(k1) {}
+	WhirlpoolGenerator(BoundingBox* zone, Vector3 center, float K, float k1) : _whirlpoolCenter(center), zone(zone), _k(K), _k1(k1) {}
 	void updateForce(Particle* particle, double duration) override;
 };
 

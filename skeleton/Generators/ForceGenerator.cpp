@@ -10,7 +10,7 @@ void GravityForceGenerator::updateForce(Particle* p, double duration) {
 }
 
 void ParticleDragGenerator::updateForce(Particle* p, double duration) {
-	if (fabs(p->getData().inv_mass) < 1e-10 || !zone.isInBoundingBox(p->getData().pose.p)) return;
+	if (fabs(p->getData().inv_mass) < 1e-10 || !zone->isInBoundingBox(p->getData().pose.p)) return;
 
 	Vector3 v = p->getData().vel;
 	Vector3 dragF = _k1 * (_windSpeed - v) + _k2 * (_windSpeed - v).magnitude() * (_windSpeed - v);
@@ -18,7 +18,7 @@ void ParticleDragGenerator::updateForce(Particle* p, double duration) {
 }
 
 void WhirlpoolGenerator::updateForce(Particle* p, double duration) {
-	if (fabs(p->getData().inv_mass) < 1e-10 || !zone.isInBoundingBox(p->getData().pose.p)) return;
+	if (fabs(p->getData().inv_mass) < 1e-10 || !zone->isInBoundingBox(p->getData().pose.p)) return;
 
 	Vector3 pos = p->getData().pose.p;
 	Vector3 vel = p->getData().vel;
