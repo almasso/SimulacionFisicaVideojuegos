@@ -70,7 +70,7 @@ void ParticleSystem::generateExplosion(BoundingBox* bb) {
 
 void ParticleSystem::generateSpringDemo() {
 	Particle* p1 = new Particle(Particle::Particle_Type::NORMAL, 1, Vector3(0, 80, 0), Vector3(0, 0, 0), 0.998, Vector4(1,1,0,1));
-	Particle* p2 = new Particle(Particle::Particle_Type::NORMAL, 0.5, Vector3(10, 40, 0), Vector3(0, 0, 0), 0.998, Vector4(0, 1, 0, 1));
+	Particle* p2 = new Particle(Particle::Particle_Type::NORMAL, 1, Vector3(10, 160, 0), Vector3(0, 0, 0), 0.998, Vector4(0, 1, 0, 1));
 	SpringForceGenerator* f1 = new SpringForceGenerator(1, 30, p2);
 	SpringForceGenerator* f2 = new SpringForceGenerator(1, 30, p1);
 	_particleRegistry.addRegistry(p1, f1);
@@ -79,12 +79,12 @@ void ParticleSystem::generateSpringDemo() {
 	_forces.push_back(f2);
 	_particles.push_back(p1);
 	_particles.push_back(p2);
-	GravityForceGenerator* grav = new GravityForceGenerator(Vector3(0, -9.8, 0));
-	_particleRegistry.addRegistry(p2, grav);
+	//GravityForceGenerator* grav = new GravityForceGenerator(Vector3(0, -9.8, 0));
+	//_particleRegistry.addRegistry(p2, grav);
 
-	/*Particle* p3 = new Particle(Particle::Particle_Type::NORMAL, 0.5, Vector3(10, 12, 0), Vector3(0, 0, 0), 0.998, Vector4(0, 1, 0, 1));
-	AnchoredSpringFG* f3 = new AnchoredSpringFG(1, 10, { 10,20,0 });
+	Particle* p3 = new Particle(Particle::Particle_Type::NORMAL, 1, Vector3(12, 12, 0), Vector3(0, 0, 0), 0.998, Vector4(0, 1, 1, 1));
+	AnchoredSpringFG* f3 = new AnchoredSpringFG(1, 10, { 12,20,0 });
 	_particleRegistry.addRegistry(p3, f3);
 	_forces.push_back(f3);
-	_particles.push_back(p3);*/
+	_particles.push_back(p3);
 }

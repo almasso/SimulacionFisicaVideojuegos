@@ -58,5 +58,5 @@ void SpringForceGenerator::updateForce(Particle* p, double duration) {
 }
 
 AnchoredSpringFG::AnchoredSpringFG(double k, double resting, const Vector3& anchor_pos) : SpringForceGenerator(k, resting, nullptr) {
-	_other = new Particle(Particle::Particle_Type::NORMAL, 0, Vector3(0, 0, 0), Vector3(0, 0, 0), 0, Vector4(0, 0, 0, 0));
+	_other = new Particle(Particle::Particle_Type::NORMAL, 0, anchor_pos, Vector3(0, 0, 0), 0, Vector4(0, 0, 0, 0));
 }
