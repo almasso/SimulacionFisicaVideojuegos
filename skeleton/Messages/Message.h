@@ -5,7 +5,8 @@
 class ForceGenerator;
 namespace message {
 	enum class msgID {
-		_m_GENERATOR_ERASABLE
+		_m_GENERATOR_ERASABLE,
+		_m_CHANGE_HOOKE_CONSTANT
 	};
 
 	struct Message {
@@ -14,6 +15,10 @@ namespace message {
 		struct {
 			ForceGenerator* fg;
 		} genData;
+
+		struct {
+			int val;
+		} hookeValue;
 
 		Message(int id) : id(id) {};
 		Message() = default;

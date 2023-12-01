@@ -35,6 +35,8 @@ public:
 	inline void setInverseMass(float inverse_mass) { this->data.inv_mass = inverse_mass; }
 	inline void setVelocity(Vector3 velocity) { this->data.vel = velocity; }
 	inline void addForce(const Force& f) { data.force += f; }
+	inline double getParticleVolume() const { return (4.0 / 3) * (std::atan(1) * 4) * data.size/2 * data.size/2 * data.size/2; }
+	inline double getParticleDensity() const { return getParticleVolume() * data.inv_mass; }
 
 protected:
 	particle_data data;

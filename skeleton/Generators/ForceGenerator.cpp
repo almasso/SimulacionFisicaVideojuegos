@@ -3,6 +3,9 @@
 #include "../checkMemoryLeaks.h"
 #include <math.h>
 #include <numbers>
+#include <iostream>
+#include <string>
+#include "../Messages/Message.h"
 
 void GravityForceGenerator::updateForce(Particle* p, double duration) {
 	if (fabs(p->getData().inv_mass) < 1e-10) return;
@@ -47,6 +50,11 @@ void ExplosionGenerator::updateForce(Particle* p, double duration) {
 }
 
 void SpringForceGenerator::updateForce(Particle* p, double duration) {
+	std::list<message::Message> msgs = message::MessageManager::receiveMessages((int)message::msgID::_m_CHANGE_HOOKE_CONSTANT);
+	if (msgs.size() > 0) {
+		_k = msgs.front().hookeValue.val;
+	}
+
 	Vector3 relative_pos_vector = _other->getData().pose.p - p->getData().pose.p;
 	Vector3 force;
 
@@ -59,4 +67,23 @@ void SpringForceGenerator::updateForce(Particle* p, double duration) {
 
 AnchoredSpringFG::AnchoredSpringFG(double k, double resting, const Vector3& anchor_pos) : SpringForceGenerator(k, resting, nullptr) {
 	_other = new Particle(Particle::Particle_Type::NORMAL, 0, anchor_pos, Vector3(0, 0, 0), 0, Vector4(0, 0, 0, 0));
+}
+
+BuoyancyForceGenerator::BuoyancyForceGenerator(float d, Vector3 pos) : _liquid_density(d) {
+	_liquid_particle = new Plane(pos, Vector3(50, 0.5f, 50), Vector4(0, 0, 1, 1));
+};
+
+void BuoyancyForceGenerator::updateForce(Particle* p, double duration) {
+	float h = p->getData().pose.p.y;
+	float h0 = _liquid_particle->getPos().p.y;
+	float _height = p->getData().size;
+
+	Vector3 f(0, 0, 0);
+	float immersed = 0.0;
+	if (h - h0 > _height * 0.5) immersed = 0.0;
+	else if (h0 - h > _height * 0.5) immersed = 1.0;
+	else immersed = (h0 - h) / _height + 0.5;
+	f.y = _liquid_density * p->getParticleVolume() * immersed * _gravity;
+
+	p->addForce(f);
 }

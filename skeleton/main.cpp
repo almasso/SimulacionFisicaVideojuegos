@@ -67,6 +67,7 @@ bool gG = false, dG = false, wG = false;
 GravityForceGenerator* currGG = nullptr;
 ParticleDragGenerator* currDG = nullptr;
 WhirlpoolGenerator* currWG = nullptr;
+bool pause = false;
 
 
 #ifdef PARTICLE
@@ -126,18 +127,34 @@ void initPhysics(bool interactive)
 // t: time passed since last call in milliseconds
 void stepPhysics(bool interactive, double t)
 {
-	partSystem->update(t);
-	projSystem->update(t);
-	switch (projectile_mode) {
+
+	PX_UNUSED(interactive);
+
+	if (!pause) {
+		partSystem->update(t);
+		projSystem->update(t);
+		switch (projectile_mode) {
 		case Projectile::ProjectileType::PROJECTILE_BULLET: bullet_text = "Bullet Mode"; break;
 		case Projectile::ProjectileType::PROJECTILE_CANNONBALL: bullet_text = "Cannonball Mode"; break;
+		}
+	}
+	else {
+		std::string command;
+		int value;
+		std::cout << "Introduce un comando: ";
+		std::cin >> command;
+		if (command == "changeK") {
+			std::cin >> value;
+			message::Message m((int)message::msgID::_m_CHANGE_HOOKE_CONSTANT);
+			m.hookeValue.val = value;
+			message::MessageManager::sendMessage(m);
+		}
+		pause = false;
 	}
 
 #ifdef PARTICLE
 	particle->integrate(t);
 #endif
-
-	PX_UNUSED(interactive);
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -199,8 +216,20 @@ void keyPress(unsigned char key, const PxTransform& camera)
 			partSystem->generateFirework(Vector3(0, 0, 0), Vector3(0, 50, 0), 4, 0.998f, Vector4(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1));
 			break;
 		}
-		case 'K': {
+		case '7': {
 			partSystem->generateSpringDemo();
+			break;
+		}
+		case '8': {
+			partSystem->generateAnchoredSpringDemo();
+			break;
+		}
+		case '9': {
+			partSystem->generateBuoyancyDemo();
+			break;
+		}
+		case 'C': {
+			pause = true;
 			break;
 		}
 		case 'M': {

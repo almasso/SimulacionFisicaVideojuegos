@@ -3,6 +3,7 @@
 #include "../checkMemoryLeaks.h"
 #include "../Utils/BoundingBox.h"
 #include "../Messages/Message.h"
+#include "../Extras/Plane.h"
 using Force = Vector3;
 class Particle;
 
@@ -72,7 +73,7 @@ public:
 class SpringForceGenerator : public ForceGenerator {
 public:
 	SpringForceGenerator(double k, double resting_length, Particle* other) : _k(k), _resting_length(resting_length), _other(other) {}
-	void updateForce(Particle*, double duration) override;
+	void updateForce(Particle* p, double duration) override;
 	inline void setK(double k) { _k = k; }
 protected:
 	double _k;
@@ -85,6 +86,19 @@ public:
 	AnchoredSpringFG(double k, double resting, const Vector3& anchor_pos);
 	~AnchoredSpringFG() {
 		delete _other;
+	}
+};
+
+class BuoyancyForceGenerator : public ForceGenerator {
+private:
+	float _liquid_density;
+	float _gravity = 9.8;
+	Plane* _liquid_particle = nullptr;
+public:
+	BuoyancyForceGenerator(float d, Vector3 pos);
+	void updateForce(Particle* p, double duration) override;
+	~BuoyancyForceGenerator() {
+		delete _liquid_particle;
 	}
 };
 
