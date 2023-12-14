@@ -14,9 +14,11 @@ Particle::Particle(Particle& p) {
 	this->data.force = p.data.force;
 	this->data.inv_mass = p.data.inv_mass;
 	
-	physx::PxSphereGeometry sphere(this->data.size);
-	physx::PxShape* shape = CreateShape(sphere);
-	this->data.renderItem = new RenderItem(shape, &(this->data.pose), this->data.colour);
+	if (!this->data.renderItem) {
+		physx::PxSphereGeometry sphere(this->data.size);
+		physx::PxShape* shape = CreateShape(sphere);
+		this->data.renderItem = new RenderItem(shape, &(this->data.pose), this->data.colour);
+	}
 }
 
 Particle::Particle(Particle_Type type, float damping, Vector4 Col) {
@@ -44,7 +46,6 @@ Particle::Particle(Particle_Type type, float inv_mass, Vector3 pos, Vector3 vel,
 
 Particle::~Particle() {
 	if(data.renderItem != nullptr) data.renderItem->release();
-
 }
 
 void Particle::integrate(double t) {
@@ -63,4 +64,29 @@ void Particle::integrate(double t) {
 	std::cout << "VELOCIDAD:(" << vel.x << "," << vel.y << "," << vel.z << ")\n";
 	std::cout << "ACELERACIÓN:(" << acceleration.x << "," << acceleration.y << "," << acceleration.z << ")\n";
 #endif
+}
+
+SolidParticle::SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, SolidParticle& p) : Particle(p) {
+	esfera = (this->data.inv_mass <= 0.0f) ? static_cast<physx::PxRigidActor*>(gPhysics->createRigidStatic(this->data.pose)) : static_cast<physx::PxRigidActor*>(gPhysics->createRigidDynamic(this->data.pose));
+	physx::PxSphereGeometry sphere(this->data.size);
+	physx::PxShape* shape = CreateShape(sphere);
+	this->data.inv_mass <= 0.0f ? static_cast<physx::PxRigidStatic*>(esfera)->attachShape(*shape) : static_cast<physx::PxRigidDynamic*>(esfera)->attachShape(*shape);
+	if(this->data.inv_mass > 0.0f) physx::PxRigidBodyExt::updateMassAndInertia(*(static_cast<physx::PxRigidDynamic*>(esfera)), getParticleVolume() * this->data.inv_mass);
+	gScene->addActor(*esfera);
+	this->data.renderItem = new RenderItem(shape, esfera, this->data.colour);
+}
+
+SolidParticle::SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float damping, Vector4 Col) : Particle(type, damping, Col) {}
+
+SolidParticle::SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float damping, Vector4 Col) : SolidParticle(gPhysics, gScene, type, inv_mass, Pos, Vel, 1, damping, Col) {}
+
+SolidParticle::SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float size, float damping, Vector4 Col) : Particle(type, inv_mass, Pos, Vel, size, damping, Col) {
+	this->data.renderItem->release();
+	esfera = (this->data.inv_mass <= 0.0f) ? static_cast<physx::PxRigidActor*>(gPhysics->createRigidStatic(this->data.pose)) : static_cast<physx::PxRigidActor*>(gPhysics->createRigidDynamic(this->data.pose));
+	physx::PxSphereGeometry sphere(this->data.size);
+	physx::PxShape* shape = CreateShape(sphere);
+	this->data.inv_mass <= 0.0f ? static_cast<physx::PxRigidStatic*>(esfera)->attachShape(*shape) : static_cast<physx::PxRigidDynamic*>(esfera)->attachShape(*shape);
+	if (this->data.inv_mass > 0.0f) physx::PxRigidBodyExt::updateMassAndInertia(*(static_cast<physx::PxRigidDynamic*>(esfera)), getParticleVolume() * this->data.inv_mass);
+	gScene->addActor(*esfera);
+	this->data.renderItem = new RenderItem(shape, esfera, this->data.colour);
 }

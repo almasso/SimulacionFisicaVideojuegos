@@ -49,6 +49,34 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles(int numParticl
 	return tmp;
 }
 
+GaussianSolidParticleGenerator::GaussianSolidParticleGenerator(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle::Particle_Type type, std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime) : GaussianParticleGenerator(type, name, generationPosition, sigmaPos, averageSpeed, sigmaSpeed, averageLifeTime, sigmaLifeTime), gPhysics(gPhysics), gScene(gScene) {
+	for (auto it = models.begin(); it != models.end();) {
+		if ((*it)) {
+			delete (*it);
+			it = models.erase(it);
+		}
+		else ++it;
+	}
+
+	for (int i = 0; i < 10; ++i) {
+		setParticle(new SolidParticle(gPhysics, gScene, type, 0.998, Vector4(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1)));
+	}
+}
+
+std::list<Particle*> GaussianSolidParticleGenerator::generateParticles(int numParticlesToGenerate) {
+	std::list<Particle*> tmp;
+	if (current < max) {
+		for (int i = 0; i < numParticlesToGenerate; ++i) {
+			Particle::particle_data data = models[rand() % models.size()]->getData();
+			SolidParticle* partTmp = new SolidParticle(gPhysics, gScene, data.type, 1.0, Vector3((*pX)(gen), (*pY)(gen), (*pZ)(gen)), Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen)), data.damping, data.colour);
+			partTmp->setLifeTime((*t)(gen));
+			tmp.push_back(partTmp);
+		}
+		current += numParticlesToGenerate;
+	}
+	return tmp;
+}
+
 UniformParticleGenerator::UniformParticleGenerator(Particle::Particle_Type type, std::string name, const Point& pA, const Point& pB, const Vector3& sA, const Vector3& sB, float tA, float tB) : ParticleGenerator(name, pA - pB, sA - sB, tA - tB),
 gen(std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count())) {
 	pX = new std::uniform_real_distribution<float>(min(pA.x, pB.x), max(pA.x, pB.x));
@@ -84,6 +112,35 @@ std::list<Particle*> UniformParticleGenerator::generateParticles(int numParticle
 	}
 	return tmp;
 }
+
+UniformSolidParticleGenerator::UniformSolidParticleGenerator(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle::Particle_Type type, std::string name, const Point& pA, const Vector3& pB, const Vector3& sA, const Vector3& sB, float tA, float tB) : UniformParticleGenerator(type, name, pA, pB, sA, sB, tA, tB), gPhysics(gPhysics), gScene(gScene) {
+	for (auto it = models.begin(); it != models.end();) {
+		if ((*it)) {
+			delete (*it);
+			it = models.erase(it);
+		}
+		else ++it;
+	}
+
+	for (int i = 0; i < 10; ++i) {
+		setParticle(new SolidParticle(gPhysics, gScene, type, 0.998, Vector4(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1)));
+	}
+}
+
+std::list<Particle*> UniformSolidParticleGenerator::generateParticles(int numParticles) {
+	std::list<Particle*> tmp;
+	if (current < max) {
+		for (int i = 0; i < numParticles; ++i) {
+			Particle::particle_data data = models[rand() % models.size()]->getData();
+			SolidParticle* partTmp = new SolidParticle(gPhysics, gScene, data.type, 1, Vector3((*pX)(gen), (*pY)(gen), (*pZ)(gen)), Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen)), data.damping, data.colour);
+			partTmp->setLifeTime((*t)(gen));
+			tmp.push_back(partTmp);
+		}
+	}
+	return tmp;
+}
+
+
 
 FireworkGenerator::FireworkGenerator(Firework* parent) : ParticleGenerator("fireworkGen", Vector3(0,0,0), Vector3(0,0,0), 0), parent(parent) {
 	for (int i = 0; i < 10; ++i) {

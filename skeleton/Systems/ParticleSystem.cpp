@@ -30,6 +30,7 @@ void ParticleSystem::update(double t) {
 			it = _particles.erase(it);
 		}
 		else if ((*it)->getLifeTime() >= tiempo_borrado || !_bb.isInBoundingBox((*it)->getPosition().p)) {
+			bool a = _bb.isInBoundingBox((*it)->getPosition().p);
 			_particleRegistry.deleteParticleRegistry(*it);
 			delete (*it);
 			it = _particles.erase(it);

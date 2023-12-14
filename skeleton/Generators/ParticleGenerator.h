@@ -42,7 +42,19 @@ protected:
 
 public:
 	GaussianParticleGenerator(Particle::Particle_Type type, std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime);
-	~GaussianParticleGenerator();
+	virtual ~GaussianParticleGenerator();
+	std::list<Particle*> generateParticles(int numParticles) override;
+};
+
+class GaussianSolidParticleGenerator : public GaussianParticleGenerator {
+private:
+	int max, current = 0;
+	physx::PxPhysics* gPhysics;
+	physx::PxScene* gScene;
+public:
+	GaussianSolidParticleGenerator(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle::Particle_Type type, std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime);
+	~GaussianSolidParticleGenerator() = default;
+	inline void setMaximumParticles(int max) { this->max = max; }
 	std::list<Particle*> generateParticles(int numParticles) override;
 };
 
@@ -58,7 +70,19 @@ protected:
 	std::uniform_real_distribution<float>* t;
 public:
 	UniformParticleGenerator(Particle::Particle_Type type, std::string name, const Point& pA, const Vector3& pB, const Vector3& sA, const Vector3& sB, float tA, float tB);
-	~UniformParticleGenerator();
+	virtual ~UniformParticleGenerator();
+	std::list<Particle*> generateParticles(int numParticles) override;
+};
+
+class UniformSolidParticleGenerator : public UniformParticleGenerator {
+private:
+	int max, current = 0;
+	physx::PxPhysics* gPhysics;
+	physx::PxScene* gScene;
+public:
+	UniformSolidParticleGenerator(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle::Particle_Type type, std::string name, const Point& pA, const Vector3& pB, const Vector3& sA, const Vector3& sB, float tA, float tB);
+	~UniformSolidParticleGenerator() = default;
+	inline void setMaximumParticles(int max) { this->max = max; }
 	std::list<Particle*> generateParticles(int numParticles) override;
 };
 

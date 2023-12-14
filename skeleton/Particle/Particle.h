@@ -26,20 +26,33 @@ public:
 	virtual ~Particle();
 
 	virtual void integrate(double t);
-	inline physx::PxTransform const getPosition() const { return data.pose; }
-	inline void setLifeTime(float lifeTime) { this->data.lifeTime = lifeTime; }
-	inline double const getLifeTime() const {return data.lifeTime;}
-	inline particle_data getData() const { return data; }
-	inline void setData(const particle_data& data) { this->data = data; }
-	inline void setPosition(Vector3 position) { this->data.pose = physx::PxTransform(position); }
-	inline void setInverseMass(float inverse_mass) { this->data.inv_mass = inverse_mass; }
-	inline void setVelocity(Vector3 velocity) { this->data.vel = velocity; }
-	inline void addForce(const Force& f) { data.force += f; }
-	inline double getParticleVolume() const { return (4.0 / 3) * (std::atan(1) * 4) * data.size/2 * data.size/2 * data.size/2; }
-	inline double getParticleDensity() const { return getParticleVolume() * data.inv_mass; }
+	virtual inline physx::PxTransform const getPosition() const { return data.pose; }
+	virtual inline void setLifeTime(float lifeTime) { this->data.lifeTime = lifeTime; }
+	virtual inline double const getLifeTime() const {return data.lifeTime;}
+	virtual inline particle_data getData() const { return data; }
+	virtual inline void setData(const particle_data& data) { this->data = data; }
+	virtual inline void setPosition(Vector3 position) { this->data.pose = physx::PxTransform(position); }
+	virtual inline void setInverseMass(float inverse_mass) { this->data.inv_mass = inverse_mass; }
+	virtual inline void setVelocity(Vector3 velocity) { this->data.vel = velocity; }
+	virtual inline void addForce(const Force& f) { data.force += f; }
+	virtual inline double getParticleVolume() const { return (4.0 / 3) * (std::atan(1) * 4) * data.size/2 * data.size/2 * data.size/2; }
+	virtual inline double getParticleDensity() const { return getParticleVolume() * data.inv_mass; }
 
 protected:
 	particle_data data;
 
 	inline void clearForce() { data.force *= 0.0; }
+};
+
+class SolidParticle : public Particle {
+private:
+	physx::PxRigidActor* esfera;
+public:
+	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, SolidParticle& p);
+	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
+	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
+	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float size = 1.0f, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
+	~SolidParticle() = default;
+	inline void addForce(const Force& f) override { static_cast<physx::PxRigidDynamic*>(esfera)->addForce(f); }
+	inline physx::PxRigidActor* getRigidActor() const { return esfera; }
 };
