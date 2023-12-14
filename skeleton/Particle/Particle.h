@@ -5,7 +5,7 @@
 
 class Particle {
 public:
-	enum class Particle_Type {NORMAL, PROJECTILE, FIREWORK};
+	enum class Particle_Type {NORMAL, PROJECTILE, FIREWORK, SOLID};
 	struct particle_data {
 		Particle_Type type;
 		Vector3 vel;
@@ -53,6 +53,8 @@ public:
 	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
 	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float size = 1.0f, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
 	~SolidParticle() = default;
+	
+	void integrate(double time) override;
 	inline void addForce(const Force& f) override { static_cast<physx::PxRigidDynamic*>(esfera)->addForce(f); }
 	inline physx::PxRigidActor* getRigidActor() const { return esfera; }
 };

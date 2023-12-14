@@ -71,7 +71,10 @@ SolidParticle::SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene,
 	physx::PxSphereGeometry sphere(this->data.size);
 	physx::PxShape* shape = CreateShape(sphere);
 	this->data.inv_mass <= 0.0f ? static_cast<physx::PxRigidStatic*>(esfera)->attachShape(*shape) : static_cast<physx::PxRigidDynamic*>(esfera)->attachShape(*shape);
-	if(this->data.inv_mass > 0.0f) physx::PxRigidBodyExt::updateMassAndInertia(*(static_cast<physx::PxRigidDynamic*>(esfera)), getParticleVolume() * this->data.inv_mass);
+	if (this->data.inv_mass > 0.0f) {
+		physx::PxRigidBodyExt::updateMassAndInertia(*(static_cast<physx::PxRigidDynamic*>(esfera)), getParticleVolume() * this->data.inv_mass);
+		static_cast<physx::PxRigidDynamic*>(esfera)->setLinearVelocity(this->data.vel);
+	}
 	gScene->addActor(*esfera);
 	this->data.renderItem = new RenderItem(shape, esfera, this->data.colour);
 }
@@ -86,7 +89,14 @@ SolidParticle::SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene,
 	physx::PxSphereGeometry sphere(this->data.size);
 	physx::PxShape* shape = CreateShape(sphere);
 	this->data.inv_mass <= 0.0f ? static_cast<physx::PxRigidStatic*>(esfera)->attachShape(*shape) : static_cast<physx::PxRigidDynamic*>(esfera)->attachShape(*shape);
-	if (this->data.inv_mass > 0.0f) physx::PxRigidBodyExt::updateMassAndInertia(*(static_cast<physx::PxRigidDynamic*>(esfera)), getParticleVolume() * this->data.inv_mass);
+	if (this->data.inv_mass > 0.0f) {
+		physx::PxRigidBodyExt::updateMassAndInertia(*(static_cast<physx::PxRigidDynamic*>(esfera)), getParticleVolume() * this->data.inv_mass);
+		static_cast<physx::PxRigidDynamic*>(esfera)->setLinearVelocity(this->data.vel);
+	}
 	gScene->addActor(*esfera);
 	this->data.renderItem = new RenderItem(shape, esfera, this->data.colour);
+}
+
+void SolidParticle::integrate(double t) {
+
 }
