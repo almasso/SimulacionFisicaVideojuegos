@@ -12,11 +12,11 @@ protected:
 	RenderItem* renderItem;
 };
 
-class RigidPlane : public Plane {
+class SolidPlane : public Plane {
 private:
 	physx::PxRigidActor* plano;
 public:
-	RigidPlane(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Vector3 pos, Vector3 Dimensions, Vector4 Color = { 1, 0.78, 0, 1 });
-	~RigidPlane();
+	SolidPlane(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Vector3 pos, Vector3 Dimensions, Vector4 Color = { 1, 0.78, 0, 1 });
+	~SolidPlane();
 };
 

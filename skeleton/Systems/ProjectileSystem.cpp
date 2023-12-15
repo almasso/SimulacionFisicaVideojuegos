@@ -1,4 +1,5 @@
 #include "ProjectileSystem.h"
+#include "../checkMemoryLeaks.h"
 
 ProjectileSystem::~ProjectileSystem() {
 	for (auto p : _particles) delete p;

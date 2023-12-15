@@ -29,6 +29,7 @@
 
 #include "Render.h"
 #include <assert.h>
+#include "../checkMemoryLeaks.h"
 
 using namespace physx;
 
@@ -406,6 +407,7 @@ void drawText(const std::string& text, int x, int y)
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixd(matrix);
 	glMatrixMode(GL_MODELVIEW);
+	delete matrix;
 }
 
 

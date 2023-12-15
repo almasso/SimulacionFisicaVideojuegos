@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <unordered_map>
 #include <list>
+#include "../checkMemoryLeaks.h"
+
 class ForceGenerator;
 namespace message {
 	enum class msgID {

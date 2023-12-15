@@ -1,4 +1,5 @@
 #include "Message.h"
+#include "../checkMemoryLeaks.h"
 
 std::unordered_multimap<int, message::Message> message::MessageManager::_messages = std::unordered_multimap<int, message::Message>();
 

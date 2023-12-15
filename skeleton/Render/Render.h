@@ -27,7 +27,6 @@
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
-
 #ifndef PHYSX_SNIPPET_RENDER_H
 #define PHYSX_SNIPPET_RENDER_H
 
@@ -46,6 +45,7 @@
 #error platform not supported.
 #endif
 #include <string>
+#include "../checkMemoryLeaks.h"
 
 extern std::string display_text;
 extern std::string bullet_text;

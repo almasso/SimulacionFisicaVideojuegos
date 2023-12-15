@@ -31,6 +31,7 @@
 #ifndef PHYSX_SNIPPET_CAMERA_H
 #define PHYSX_SNIPPET_CAMERA_H
 
+#include "../checkMemoryLeaks.h"
 #include "foundation/PxTransform.h"
 
 namespace Snippets

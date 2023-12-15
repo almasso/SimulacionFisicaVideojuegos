@@ -59,7 +59,7 @@ std::unordered_map<Projectile::ProjectileType, float> defaultProjectileSize = {
 	{Projectile::ProjectileType::PROJECTILE_BULLET, 0.6f},
 	{Projectile::ProjectileType::PROJECTILE_CANNONBALL, 4.0f}
 };
-RigidPlane* plane;
+SolidPlane* plane;
 ParticleSystem* partSystem;
 ProjectileSystem* projSystem;
 BoundingBoxRegistry* bbReg;
@@ -104,7 +104,7 @@ void initPhysics(bool interactive)
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
 	//plane = new Plane(Vector3(0, 0, 0), Vector3(100.0f, 0.1f, 100.0f), Vector4(1, 0, 0, 1));
-	plane = new RigidPlane(gPhysics, gScene, Vector3(0, 0, 0), Vector3(5000.0f,0.1f,5000.0f), Vector4(1,0,0,1));
+	plane = new SolidPlane(gPhysics, gScene, Vector3(0, 0, 0), Vector3(5000.0f,0.1f,5000.0f), Vector4(1,0,0,1));
 	bbReg = new BoundingBoxRegistry();
 	bbReg->addRegistry("particleSysBB", new BoundingBox(Vector3(-600, -150, -600), Vector3(600, 300, 600)));
 	bbReg->addRegistry("projectileBB", new BoundingBox(Vector3(-750, 0, -750), Vector3(750, 2000, 750)));

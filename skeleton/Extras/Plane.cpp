@@ -11,7 +11,7 @@ Plane::~Plane() {
 	renderItem->release();
 }
 
-RigidPlane::RigidPlane(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Vector3 pos, Vector3 Dimensions, Vector4 Color) : Plane(pos, Dimensions, Color) {
+SolidPlane::SolidPlane(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Vector3 pos, Vector3 Dimensions, Vector4 Color) : Plane(pos, Dimensions, Color) {
 	renderItem->release();
 	plano = gPhysics->createRigidStatic(pose);
 	physx::PxBoxGeometry planeGeo(Dimensions);
@@ -21,6 +21,6 @@ RigidPlane::RigidPlane(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Vecto
 	renderItem = new RenderItem(shape, plano, Color);
 }
 
-RigidPlane::~RigidPlane() {
+SolidPlane::~SolidPlane() {
 	plano->release();
 }
