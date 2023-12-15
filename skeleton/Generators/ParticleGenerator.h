@@ -17,6 +17,8 @@ protected:
 	float avrg_lifeTime;
 	int numParticles;
 	std::vector<Particle*> models;
+	int current = 0;
+	int max;
 	
 	inline void setParticle(Particle* model) { models.push_back(model); }
 	ParticleGenerator(std::string name, const Vector3& genPos, const Vector3& averageVel, float averageLifeTime) : name(name), avrg_pos(genPos), avrg_vel(averageVel), avrg_lifeTime(averageLifeTime) {}
@@ -25,7 +27,8 @@ public:
 	virtual std::list<Particle*> generateParticles(int numParticles) = 0;
 	inline std::string getName() const { return name; }
 	virtual ~ParticleGenerator();
-
+	inline void setMaximumParticles(int max) { this->max = max; }
+	inline void freeParticles(int freedParticles) { this->current -= freedParticles; }
 };
 
 class GaussianParticleGenerator : public ParticleGenerator {
@@ -48,13 +51,11 @@ public:
 
 class GaussianSolidParticleGenerator : public GaussianParticleGenerator {
 private:
-	int max, current = 0;
 	physx::PxPhysics* gPhysics;
 	physx::PxScene* gScene;
 public:
 	GaussianSolidParticleGenerator(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle::Particle_Type type, std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime);
 	~GaussianSolidParticleGenerator() = default;
-	inline void setMaximumParticles(int max) { this->max = max; }
 	std::list<Particle*> generateParticles(int numParticles) override;
 };
 
@@ -76,13 +77,11 @@ public:
 
 class UniformSolidParticleGenerator : public UniformParticleGenerator {
 private:
-	int max, current = 0;
 	physx::PxPhysics* gPhysics;
 	physx::PxScene* gScene;
 public:
 	UniformSolidParticleGenerator(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle::Particle_Type type, std::string name, const Point& pA, const Vector3& pB, const Vector3& sA, const Vector3& sB, float tA, float tB);
 	~UniformSolidParticleGenerator() = default;
-	inline void setMaximumParticles(int max) { this->max = max; }
 	std::list<Particle*> generateParticles(int numParticles) override;
 };
 

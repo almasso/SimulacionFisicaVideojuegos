@@ -56,5 +56,6 @@ public:
 	
 	void integrate(double time) override;
 	inline void addForce(const Force& f) override { static_cast<physx::PxRigidDynamic*>(esfera)->addForce(f); }
+	inline physx::PxTransform const getPosition() const override { return static_cast<physx::PxRigidDynamic*>(esfera)->getGlobalPose(); }
 	inline physx::PxRigidActor* getRigidActor() const { return esfera; }
 };

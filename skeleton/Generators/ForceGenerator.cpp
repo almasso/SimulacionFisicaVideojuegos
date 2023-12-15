@@ -8,7 +8,7 @@
 #include "../Messages/Message.h"
 
 void GravityForceGenerator::updateForce(Particle* p, double duration) {
-	if (fabs(p->getData().inv_mass) < 1e-10) return;
+	if (fabs(p->getData().inv_mass) < 1e-10 || p->getData().type == Particle::Particle_Type::SOLID) return;
 	p->addForce(_gravity * 1 / p->getData().inv_mass);
 }
 
