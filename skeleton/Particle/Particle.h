@@ -3,6 +3,8 @@
 #include "../Generators/ForceGenerator.h"
 #include "../checkMemoryLeaks.h"
 
+class ParticleGenerator;
+
 class Particle {
 public:
 	enum class Particle_Type {NORMAL, PROJECTILE, FIREWORK, SOLID};
@@ -17,6 +19,7 @@ public:
 		Vector4 colour;
 		Force force;
 		float inv_mass;
+		ParticleGenerator* generator = nullptr;
 	};
 
 	Particle(Particle& p);
@@ -37,6 +40,8 @@ public:
 	virtual inline void addForce(const Force& f) { data.force += f; }
 	virtual inline double getParticleVolume() const { return (4.0 / 3) * (std::atan(1) * 4) * data.size/2 * data.size/2 * data.size/2; }
 	virtual inline double getParticleDensity() const { return getParticleVolume() * data.inv_mass; }
+	virtual inline void setParticleGenerator(ParticleGenerator* pG) { this->data.generator = pG; }
+	virtual inline ParticleGenerator* getParticleGenerator() const { return this->data.generator; }
 
 protected:
 	particle_data data;

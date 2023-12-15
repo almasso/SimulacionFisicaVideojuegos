@@ -69,6 +69,7 @@ std::list<Particle*> GaussianSolidParticleGenerator::generateParticles(int numPa
 		for (int i = 0; i < numParticlesToGenerate; ++i) {
 			Particle::particle_data data = models[rand() % models.size()]->getData();
 			SolidParticle* partTmp = new SolidParticle(gPhysics, gScene, data.type, 1.0, Vector3((*pX)(gen), (*pY)(gen), (*pZ)(gen)), Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen)), data.damping, data.colour);
+			partTmp->setParticleGenerator(this);
 			partTmp->setLifeTime((*t)(gen));
 			tmp.push_back(partTmp);
 		}
@@ -133,9 +134,11 @@ std::list<Particle*> UniformSolidParticleGenerator::generateParticles(int numPar
 		for (int i = 0; i < numParticles; ++i) {
 			Particle::particle_data data = models[rand() % models.size()]->getData();
 			SolidParticle* partTmp = new SolidParticle(gPhysics, gScene, data.type, 1, Vector3((*pX)(gen), (*pY)(gen), (*pZ)(gen)), Vector3((*vX)(gen), (*vY)(gen), (*vZ)(gen)), data.damping, data.colour);
+			partTmp->setParticleGenerator(this);
 			partTmp->setLifeTime((*t)(gen));
 			tmp.push_back(partTmp);
 		}
+		current += numParticles;
 	}
 	return tmp;
 }
