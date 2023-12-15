@@ -39,9 +39,10 @@ public:
 	virtual inline void setVelocity(Vector3 velocity) { this->data.vel = velocity; }
 	virtual inline void addForce(const Force& f) { data.force += f; }
 	virtual inline double getParticleVolume() const { return (4.0 / 3) * (std::atan(1) * 4) * data.size/2 * data.size/2 * data.size/2; }
-	virtual inline double getParticleDensity() const { return getParticleVolume() * data.inv_mass; }
+	virtual inline double getParticleDensity() const { return (1 / data.inv_mass) / getParticleVolume(); }
 	virtual inline void setParticleGenerator(ParticleGenerator* pG) { this->data.generator = pG; }
 	virtual inline ParticleGenerator* getParticleGenerator() const { return this->data.generator; }
+	virtual inline Vector3 getVelocity() const { return data.vel; }
 
 protected:
 	particle_data data;
@@ -61,6 +62,7 @@ public:
 	
 	void integrate(double time) override;
 	inline void addForce(const Force& f) override { static_cast<physx::PxRigidDynamic*>(esfera)->addForce(f); }
-	inline physx::PxTransform const getPosition() const override { return static_cast<physx::PxRigidDynamic*>(esfera)->getGlobalPose(); }
+	inline physx::PxTransform const getPosition() const override { return static_cast<physx::PxRigidDynamic*>(esfera)->getGlobalPose();}
 	inline physx::PxRigidActor* getRigidActor() const { return esfera; }
+	inline Vector3 getVelocity() const override { return static_cast<physx::PxRigidDynamic*>(esfera)->getLinearVelocity(); }
 };

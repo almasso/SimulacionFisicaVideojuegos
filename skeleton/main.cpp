@@ -115,7 +115,7 @@ void initPhysics(bool interactive)
 	//GaussianSolidParticleGenerator* gspg = new GaussianSolidParticleGenerator(gPhysics, gScene, Particle::Particle_Type::NORMAL, "mainGaussianParticleGenerator", (bbReg->at("particleSysBB"))->center(), Vector3(0.01f, 0.001f, 0.01f), Vector3(0, 50, 0.0f), Vector3(15, 20, 15), 5.0f, 5.0f);
 	//gspg->setMaximumParticles(1000);
 	//partSystem->addParticleGenerator(gspg);
-	UniformSolidParticleGenerator* uspg = new UniformSolidParticleGenerator(gPhysics, gScene, Particle::Particle_Type::SOLID, "mainUniformParticleGenerator", (bbReg->at("particleSysBB"))->center(), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f);
+	UniformSolidParticleGenerator* uspg = new UniformSolidParticleGenerator(gPhysics, gScene, Particle::Particle_Type::SOLID, "mainUniformParticleGenerator", (bbReg->at("particleSysBB"))->bottomCenter() + Vector3(0,150,0), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f);
 	uspg->setMaximumParticles(1000);
 	partSystem->addParticleGenerator(uspg);
 

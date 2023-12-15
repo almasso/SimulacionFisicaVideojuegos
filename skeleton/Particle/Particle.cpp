@@ -15,7 +15,7 @@ Particle::Particle(Particle& p) {
 	this->data.inv_mass = p.data.inv_mass;
 	
 	if (!this->data.renderItem) {
-		physx::PxSphereGeometry sphere(this->data.size);
+		physx::PxSphereGeometry sphere(this->data.size/2);
 		physx::PxShape* shape = CreateShape(sphere);
 		this->data.renderItem = new RenderItem(shape, &(this->data.pose), this->data.colour);
 	}
@@ -36,7 +36,7 @@ Particle::Particle(Particle_Type type, float inv_mass, Vector3 pos, Vector3 vel,
 	data.damping = damping;
 	data.size = size;
 	data.colour = Col;
-	physx::PxSphereGeometry sphere(this->data.size);
+	physx::PxSphereGeometry sphere(this->data.size/2);
 	physx::PxShape* shape = CreateShape(sphere);
 	data.renderItem = new RenderItem(shape, &data.pose, Col);
 	data.lifeTime = 0.0f;
@@ -68,7 +68,7 @@ void Particle::integrate(double t) {
 
 SolidParticle::SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, SolidParticle& p) : Particle(p) {
 	esfera = (this->data.inv_mass <= 0.0f) ? static_cast<physx::PxRigidActor*>(gPhysics->createRigidStatic(this->data.pose)) : static_cast<physx::PxRigidActor*>(gPhysics->createRigidDynamic(this->data.pose));
-	physx::PxSphereGeometry sphere(this->data.size);
+	physx::PxSphereGeometry sphere(this->data.size/2);
 	physx::PxShape* shape = CreateShape(sphere);
 	this->data.inv_mass <= 0.0f ? static_cast<physx::PxRigidStatic*>(esfera)->attachShape(*shape) : static_cast<physx::PxRigidDynamic*>(esfera)->attachShape(*shape);
 	if (this->data.inv_mass > 0.0f) {
@@ -86,11 +86,11 @@ SolidParticle::SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene,
 SolidParticle::SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float size, float damping, Vector4 Col) : Particle(type, inv_mass, Pos, Vel, size, damping, Col) {
 	this->data.renderItem->release();
 	esfera = (this->data.inv_mass <= 0.0f) ? static_cast<physx::PxRigidActor*>(gPhysics->createRigidStatic(this->data.pose)) : static_cast<physx::PxRigidActor*>(gPhysics->createRigidDynamic(this->data.pose));
-	physx::PxSphereGeometry sphere(this->data.size);
+	physx::PxSphereGeometry sphere(this->data.size/2);
 	physx::PxShape* shape = CreateShape(sphere);
 	this->data.inv_mass <= 0.0f ? static_cast<physx::PxRigidStatic*>(esfera)->attachShape(*shape) : static_cast<physx::PxRigidDynamic*>(esfera)->attachShape(*shape);
 	if (this->data.inv_mass > 0.0f) {
-		physx::PxRigidBodyExt::updateMassAndInertia(*(static_cast<physx::PxRigidDynamic*>(esfera)), getParticleVolume() * this->data.inv_mass);
+		physx::PxRigidBodyExt::updateMassAndInertia(*(static_cast<physx::PxRigidDynamic*>(esfera)), getParticleDensity());
 		static_cast<physx::PxRigidDynamic*>(esfera)->setLinearVelocity(this->data.vel);
 	}
 	gScene->addActor(*esfera);
