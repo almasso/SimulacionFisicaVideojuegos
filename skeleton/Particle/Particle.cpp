@@ -97,6 +97,10 @@ SolidParticle::SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene,
 	this->data.renderItem = new RenderItem(shape, esfera, this->data.colour);
 }
 
+SolidParticle::~SolidParticle() {
+	esfera->release();
+}
+
 void SolidParticle::integrate(double t) {
 
 }

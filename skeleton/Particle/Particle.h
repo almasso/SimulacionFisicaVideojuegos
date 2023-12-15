@@ -26,7 +26,7 @@ public:
 	Particle(Particle_Type type, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
 	Particle(Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float damping = 0.998, Vector4 Col = {1,0,0,1});
 	Particle(Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float size = 1.0f, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
-	virtual ~Particle();
+	~Particle();
 
 	virtual void integrate(double t);
 	virtual inline physx::PxTransform const getPosition() const { return data.pose; }
@@ -58,11 +58,11 @@ public:
 	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
 	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
 	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float size = 1.0f, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
-	~SolidParticle() = default;
+	~SolidParticle();
 	
 	void integrate(double time) override;
 	inline void addForce(const Force& f) override { static_cast<physx::PxRigidDynamic*>(esfera)->addForce(f); }
 	inline physx::PxTransform const getPosition() const override { return static_cast<physx::PxRigidDynamic*>(esfera)->getGlobalPose();}
 	inline physx::PxRigidActor* getRigidActor() const { return esfera; }
-	inline Vector3 getVelocity() const override { return static_cast<physx::PxRigidDynamic*>(esfera)->getLinearVelocity(); }
+	inline Vector3 getVelocity() const override { return static_cast<physx::PxRigidDynamic*>(esfera)->getLinearVelocity();}
 };
