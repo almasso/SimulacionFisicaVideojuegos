@@ -24,6 +24,8 @@
 #include "Registries/BoundingBoxRegistry.h"
 #include "Messages/Message.h"
 #include "checkMemoryLeaks.h"
+#include "Extras/Sea.h"
+#define PROJECT
 
 std::string display_text = "This is a test";
 
@@ -59,6 +61,8 @@ std::unordered_map<Projectile::ProjectileType, float> defaultProjectileSize = {
 	{Projectile::ProjectileType::PROJECTILE_BULLET, 0.6f},
 	{Projectile::ProjectileType::PROJECTILE_CANNONBALL, 4.0f}
 };
+
+#ifndef PROJECT
 SolidPlane* plane;
 ParticleSystem* partSystem;
 ProjectileSystem* projSystem;
@@ -69,13 +73,15 @@ ParticleDragGenerator* currDG = nullptr;
 WhirlpoolGenerator* currWG = nullptr;
 bool pause = false;
 
-
 #ifdef PARTICLE
 Particle* particle;
 #endif
-
-
-
+#endif //PROJECT
+#ifdef PROJECT
+BoundingBoxRegistry* _bbReg;
+ParticleSystem* _seaPs;
+Sea* sea;
+#endif
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -103,6 +109,7 @@ void initPhysics(bool interactive)
 
 	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
+#ifndef PROJECT
 	//plane = new Plane(Vector3(0, 0, 0), Vector3(100.0f, 0.1f, 100.0f), Vector4(1, 0, 0, 1));
 	plane = new SolidPlane(gPhysics, gScene, Vector3(0, 0, 0), Vector3(5000.0f,0.1f,5000.0f), Vector4(1,0,0,1));
 	bbReg = new BoundingBoxRegistry();
@@ -127,6 +134,15 @@ void initPhysics(bool interactive)
 #ifdef PARTICLE
 	particle = new Particle(GetCamera()->getTransform().p, GetCamera()->getDir() * 20);
 #endif
+#endif //PROJECT
+#ifdef PROJECT
+	_bbReg = new BoundingBoxRegistry();
+	_bbReg->addRegistry("seaBoundingBox", new BoundingBox(Vector3(-150, -150, -150), Vector3(150, 150, 150)));
+	_bbReg->addRegistry("seaBoundingBox2", new BoundingBox(Vector3(-20, -20, -20), Vector3(20, 20, 20)));
+	
+	sea = new Sea((_bbReg->at("seaBoundingBox")), Vector4(0, 0, 100.0f, 0.09f));
+	Sea* sea2 = new Sea((_bbReg->at("seaBoundingBox2")), Vector4(10, 0, 0.0f, 0.09f));
+#endif
 }
 
 
@@ -137,7 +153,7 @@ void stepPhysics(bool interactive, double t)
 {
 
 	PX_UNUSED(interactive);
-
+#ifndef PROJECT
 	if (!pause) {
 		partSystem->update(t);
 		projSystem->update(t);
@@ -163,6 +179,7 @@ void stepPhysics(bool interactive, double t)
 #ifdef PARTICLE
 	particle->integrate(t);
 #endif
+#endif //PROJECT
 
 	gScene->simulate(t);
 	gScene->fetchResults(true);
@@ -173,6 +190,7 @@ void stepPhysics(bool interactive, double t)
 // Add custom code to the begining of the function
 void cleanupPhysics(bool interactive)
 {
+#ifndef PROJECT
 	delete plane;
 	delete partSystem;
 	delete projSystem;
@@ -187,6 +205,7 @@ void cleanupPhysics(bool interactive)
 #ifdef PARTICLE
 	delete particle;
 #endif
+#endif // PROJECT
 	PX_UNUSED(interactive);
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
@@ -205,7 +224,18 @@ void cleanupPhysics(bool interactive)
 void keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
+#ifdef PROJECT
+	switch (toupper(key)) {
+		case 'M': {
+			for (auto it = _bbReg->begin(); it != _bbReg->end(); ++it) {
+				it->second->isShowing() ? it->second->hide() : it->second->show();
+			}
+			break;
+		}
+	}
+#endif
 
+#ifndef PROJECT
 	switch(toupper(key)) {
 		case ' ':
 		{
@@ -294,6 +324,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		default:
 			break;
 	}
+#endif // PROJECT
 }
 
 void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
