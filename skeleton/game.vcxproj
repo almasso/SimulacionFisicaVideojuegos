@@ -253,9 +253,9 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Project\Field.cpp" />
     <ClCompile Include="Generators\ForceGenerator.cpp" />
     <ClCompile Include="Messages\Message.cpp" />
-    <ClCompile Include="Extras\Sea.cpp" />
     <ClCompile Include="Systems\ProjectileSystem.cpp" />
     <ClCompile Include="Registries\ParticleForceRegistry.cpp" />
     <ClCompile Include="Utils\BoundingBox.cpp" />
@@ -272,10 +272,10 @@
     <ClCompile Include="Render\Render.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Project\Field.h" />
     <ClInclude Include="Messages\Message.h" />
     <ClInclude Include="Registries\BoundingBoxRegistry.h" />
     <ClInclude Include="Generators\ForceGenerator.h" />
-    <ClInclude Include="Extras\Sea.h" />
     <ClInclude Include="Systems\ProjectileSystem.h" />
     <ClInclude Include="Registries\ParticleForceRegistry.h" />
     <ClInclude Include="Utils\BoundingBox.h" />
@@ -291,6 +291,7 @@
     <ClInclude Include="RenderUtils.hpp" />
     <ClInclude Include="Render\Camera.h" />
     <ClInclude Include="Render\Render.h" />
+    <ClInclude Include="Utils\ColorUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

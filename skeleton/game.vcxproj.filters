@@ -21,7 +21,7 @@
     <ClCompile Include="Registries\ParticleForceRegistry.cpp" />
     <ClCompile Include="Systems\ProjectileSystem.cpp" />
     <ClCompile Include="Messages\Message.cpp" />
-    <ClCompile Include="Extras\Sea.cpp" />
+    <ClCompile Include="Project\Field.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -46,7 +46,8 @@
     <ClInclude Include="Systems\ProjectileSystem.h" />
     <ClInclude Include="Registries\BoundingBoxRegistry.h" />
     <ClInclude Include="Messages\Message.h" />
-    <ClInclude Include="Extras\Sea.h" />
+    <ClInclude Include="Project\Field.h" />
+    <ClInclude Include="Utils\ColorUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

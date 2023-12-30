@@ -117,6 +117,5 @@ PxVec3 Camera::getDir() const
 	return mDir; 
 }
 
-
 }
 

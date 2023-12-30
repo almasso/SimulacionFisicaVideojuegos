@@ -23,11 +23,12 @@
 #include "Generators/ForceGenerator.h"
 #include "Registries/BoundingBoxRegistry.h"
 #include "Messages/Message.h"
+#include "Project/Field.h"
 #include "checkMemoryLeaks.h"
-#include "Extras/Sea.h"
 #define PROJECT
 
 std::string display_text = "This is a test";
+std::string bullet_text = "Bullet Mode";
 
 
 using namespace physx;
@@ -47,7 +48,7 @@ PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
 
-std::string bullet_text = "Bullet Mode";
+#ifndef PROJECT
 Projectile::ProjectileType projectile_mode = Projectile::ProjectileType::PROJECTILE_BULLET;
 std::unordered_map<Projectile::ProjectileType, Vector4> projectile_colors = {
 	{Projectile::ProjectileType::PROJECTILE_BULLET, Vector4(1,1,0,1)},
@@ -62,7 +63,6 @@ std::unordered_map<Projectile::ProjectileType, float> defaultProjectileSize = {
 	{Projectile::ProjectileType::PROJECTILE_CANNONBALL, 4.0f}
 };
 
-#ifndef PROJECT
 SolidPlane* plane;
 ParticleSystem* partSystem;
 ProjectileSystem* projSystem;
@@ -80,7 +80,7 @@ Particle* particle;
 #ifdef PROJECT
 BoundingBoxRegistry* _bbReg;
 ParticleSystem* _seaPs;
-Sea* sea;
+Field* field;
 #endif
 
 // Initialize physics engine
@@ -106,8 +106,6 @@ void initPhysics(bool interactive)
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
-
-	GetCamera()->getTransform().rotate(Vector3(0, 0, 0));
 
 #ifndef PROJECT
 	//plane = new Plane(Vector3(0, 0, 0), Vector3(100.0f, 0.1f, 100.0f), Vector4(1, 0, 0, 1));
@@ -137,11 +135,11 @@ void initPhysics(bool interactive)
 #endif //PROJECT
 #ifdef PROJECT
 	_bbReg = new BoundingBoxRegistry();
-	_bbReg->addRegistry("seaBoundingBox", new BoundingBox(Vector3(-150, -150, -150), Vector3(150, 150, 150)));
-	_bbReg->addRegistry("seaBoundingBox2", new BoundingBox(Vector3(-20, -20, -20), Vector3(20, 20, 20)));
-	
-	sea = new Sea((_bbReg->at("seaBoundingBox")), Vector4(0, 0, 100.0f, 0.09f));
-	Sea* sea2 = new Sea((_bbReg->at("seaBoundingBox2")), Vector4(10, 0, 0.0f, 0.09f));
+	_bbReg->addRegistry("mainBB", new BoundingBox(Vector3(-150, -150, -150), Vector3(150, 150, 150)));
+	field = new Field(gPhysics, gScene, _bbReg->at("mainBB")->bottomCenter());
+	GetCamera()->setTransform(field->getFieldExtremePos() + Vector3(10, 3, 0));
+	GetCamera()->setDir(Vector3(1, -0.02, 0.033));
+
 #endif
 }
 
@@ -153,6 +151,7 @@ void stepPhysics(bool interactive, double t)
 {
 
 	PX_UNUSED(interactive);
+	//std::cout << GetCamera()->getDir().x << " " << GetCamera()->getDir().y << " " << GetCamera()->getDir().z << "\n";
 #ifndef PROJECT
 	if (!pause) {
 		partSystem->update(t);
