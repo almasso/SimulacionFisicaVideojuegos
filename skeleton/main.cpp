@@ -25,7 +25,7 @@
 #include "Messages/Message.h"
 #include "Project/Field.h"
 #include "checkMemoryLeaks.h"
-#define PROJECT
+//#define PROJECT
 
 std::string display_text = "This is a test";
 std::string bullet_text = "Bullet Mode";
@@ -120,7 +120,7 @@ void initPhysics(bool interactive)
 	//GaussianSolidParticleGenerator* gspg = new GaussianSolidParticleGenerator(gPhysics, gScene, Particle::Particle_Type::NORMAL, "mainGaussianParticleGenerator", (bbReg->at("particleSysBB"))->center(), Vector3(0.01f, 0.001f, 0.01f), Vector3(0, 50, 0.0f), Vector3(15, 20, 15), 5.0f, 5.0f);
 	//gspg->setMaximumParticles(1000);
 	//partSystem->addParticleGenerator(gspg);
-	UniformSolidParticleGenerator* uspg = new UniformSolidParticleGenerator(gPhysics, gScene, Particle::Particle_Type::SOLID, "mainUniformParticleGenerator", (bbReg->at("particleSysBB"))->bottomCenter() + Vector3(0,150,0), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f);
+	UniformSolidParticleGenerator* uspg = new UniformSolidParticleGenerator(gPhysics, gScene, Particle::Particle_Type::SOLID, Particle::Particle_Shape::MIX, "mainUniformParticleGenerator", (bbReg->at("particleSysBB"))->bottomCenter() + Vector3(0,150,0), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f);
 	uspg->setMaximumParticles(1000);
 	partSystem->addParticleGenerator(uspg);
 
@@ -205,6 +205,7 @@ void cleanupPhysics(bool interactive)
 	delete particle;
 #endif
 #endif // PROJECT
+#ifdef PROJECT
 	delete field;
 	for (auto it = _bbReg->begin(); it != _bbReg->end();) {
 		BoundingBox* tmp = it->second;
@@ -212,6 +213,7 @@ void cleanupPhysics(bool interactive)
 		delete tmp;
 	}
 	delete _bbReg;
+#endif
 	PX_UNUSED(interactive);
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++

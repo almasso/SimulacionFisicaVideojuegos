@@ -253,6 +253,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Project\Martillo.cpp" />
     <ClCompile Include="Project\Field.cpp" />
     <ClCompile Include="Generators\ForceGenerator.cpp" />
     <ClCompile Include="Messages\Message.cpp" />
@@ -273,6 +274,7 @@
     <ClCompile Include="Project\Verja.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Project\Martillo.h" />
     <ClInclude Include="Project\Field.h" />
     <ClInclude Include="Messages\Message.h" />
     <ClInclude Include="Registries\BoundingBoxRegistry.h" />

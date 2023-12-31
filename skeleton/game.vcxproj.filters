@@ -23,6 +23,7 @@
     <ClCompile Include="Messages\Message.cpp" />
     <ClCompile Include="Project\Field.cpp" />
     <ClCompile Include="Project\Verja.cpp" />
+    <ClCompile Include="Project\Martillo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -51,6 +52,7 @@
     <ClInclude Include="Utils\ColorUtils.h" />
     <ClInclude Include="Project\Verja.h" />
     <ClInclude Include="Utils\AngleUtils.h" />
+    <ClInclude Include="Project\Martillo.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

@@ -70,8 +70,8 @@ void ParticleSystem::generateExplosion(BoundingBox* bb) {
 }
 
 void ParticleSystem::generateSpringDemo() {
-	Particle* p1 = new Particle(Particle::Particle_Type::NORMAL, 1, Vector3(0, 80, 0), Vector3(0, 0, 0), 0.998, Vector4(1,1,0,1));
-	Particle* p2 = new Particle(Particle::Particle_Type::NORMAL, 1, Vector3(10, 160, 0), Vector3(0, 0, 0), 0.998, Vector4(0, 1, 0, 1));
+	Particle* p1 = new Particle(Particle::Particle_Type::NORMAL, Particle::Particle_Shape::SPHERE, 1, Vector3(0, 80, 0), Vector3(0, 0, 0), 0.998, Vector4(1,1,0,1));
+	Particle* p2 = new Particle(Particle::Particle_Type::NORMAL, Particle::Particle_Shape::SPHERE, 1, Vector3(10, 160, 0), Vector3(0, 0, 0), 0.998, Vector4(0, 1, 0, 1));
 	SpringForceGenerator* f1 = new SpringForceGenerator(1, 30, p2);
 	SpringForceGenerator* f2 = new SpringForceGenerator(1, 30, p1);
 	_particleRegistry.addRegistry(p1, f1);
@@ -83,7 +83,7 @@ void ParticleSystem::generateSpringDemo() {
 }
 
 void ParticleSystem::generateAnchoredSpringDemo() {
-	Particle* p3 = new Particle(Particle::Particle_Type::NORMAL, 1, Vector3(0, 50, 0), Vector3(0, 0, 0), 0.998, Vector4(0, 1, 1, 1));
+	Particle* p3 = new Particle(Particle::Particle_Type::NORMAL, Particle::Particle_Shape::SPHERE, 1, Vector3(0, 50, 0), Vector3(0, 0, 0), 0.998, Vector4(0, 1, 1, 1));
 	AnchoredSpringFG* f3 = new AnchoredSpringFG(1, 30, { 0,60,0 });
 	_particleRegistry.addRegistry(p3, f3);
 	_forces.push_back(f3);
@@ -91,10 +91,10 @@ void ParticleSystem::generateAnchoredSpringDemo() {
 }
 
 void ParticleSystem::generateBuoyancyDemo() {
-	Particle* p4 = new Particle(Particle::Particle_Type::NORMAL, 0.001f, Vector3(-20, 50, 0), Vector3(0, 0, 0), 4, 0.6, Vector4(0.5, 0.5, 1, 1));
-	Particle* p5 = new Particle(Particle::Particle_Type::NORMAL, 0.02f, Vector3(-10, 50, 0), Vector3(0, 0, 0),3, 0.6, Vector4(0.5, 0.5, 1, 1));
-	Particle* p6 = new Particle(Particle::Particle_Type::NORMAL, 0.3f, Vector3(10, 50, 0), Vector3(0, 0, 0), 2, 0.6, Vector4(0.5, 0.5, 1, 1));
-	Particle* p7 = new Particle(Particle::Particle_Type::NORMAL, 0.7f, Vector3(20, 50, 0), Vector3(0, 0, 0), 0.6, Vector4(0.5, 0.5, 1, 1));
+	Particle* p4 = new Particle(Particle::Particle_Type::NORMAL, Particle::Particle_Shape::SPHERE, 0.001f, Vector3(-20, 50, 0), Vector3(0, 0, 0), 4, 0.6, Vector4(0.5, 0.5, 1, 1));
+	Particle* p5 = new Particle(Particle::Particle_Type::NORMAL, Particle::Particle_Shape::SPHERE, 0.02f, Vector3(-10, 50, 0), Vector3(0, 0, 0),3, 0.6, Vector4(0.5, 0.5, 1, 1));
+	Particle* p6 = new Particle(Particle::Particle_Type::NORMAL, Particle::Particle_Shape::SPHERE, 0.3f, Vector3(10, 50, 0), Vector3(0, 0, 0), 2, 0.6, Vector4(0.5, 0.5, 1, 1));
+	Particle* p7 = new Particle(Particle::Particle_Type::NORMAL, Particle::Particle_Shape::SPHERE, 0.7f, Vector3(20, 50, 0), Vector3(0, 0, 0), 0.6, Vector4(0.5, 0.5, 1, 1));
 	BuoyancyForceGenerator* f4 = new BuoyancyForceGenerator(1000, Vector3(0,20,0));
 	_particleRegistry.addRegistry(p4, f4);
 	_particleRegistry.addRegistry(p5, f4);

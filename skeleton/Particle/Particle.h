@@ -8,8 +8,10 @@ class ParticleGenerator;
 class Particle {
 public:
 	enum class Particle_Type {NORMAL, PROJECTILE, FIREWORK, SOLID};
+	enum class Particle_Shape {SPHERE, CUBE, MIX};
 	struct particle_data {
 		Particle_Type type;
+		Particle_Shape shape;
 		Vector3 vel;
 		float damping;
 		physx::PxTransform pose;
@@ -23,9 +25,9 @@ public:
 	};
 
 	Particle(Particle& p);
-	Particle(Particle_Type type, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
-	Particle(Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float damping = 0.998, Vector4 Col = {1,0,0,1});
-	Particle(Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float size = 1.0f, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
+	Particle(Particle_Type type, Particle_Shape shape, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
+	Particle(Particle_Type type, Particle_Shape shape, float inv_mass, Vector3 Pos, Vector3 Vel, float damping = 0.998, Vector4 Col = {1,0,0,1});
+	Particle(Particle_Type type, Particle_Shape shape, float inv_mass, Vector3 Pos, Vector3 Vel, float size = 1.0f, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
 	~Particle();
 
 	virtual void integrate(double t);
@@ -38,7 +40,12 @@ public:
 	virtual inline void setInverseMass(float inverse_mass) { this->data.inv_mass = inverse_mass; }
 	virtual inline void setVelocity(Vector3 velocity) { this->data.vel = velocity; }
 	virtual inline void addForce(const Force& f) { data.force += f; }
-	virtual inline double getParticleVolume() const { return (4.0 / 3) * (std::atan(1) * 4) * data.size/2 * data.size/2 * data.size/2; }
+	virtual inline double getParticleVolume() const { 
+		switch (this->data.shape) {
+		case Particle_Shape::SPHERE: return (4.0 / 3) * (std::atan(1) * 4) * data.size / 2 * data.size / 2 * data.size / 2; break;
+		case Particle_Shape::CUBE: return this->data.size * this->data.size * this->data.size; break;
+		}
+	}
 	virtual inline double getParticleDensity() const { return (1 / data.inv_mass) / getParticleVolume(); }
 	virtual inline void setParticleGenerator(ParticleGenerator* pG) { this->data.generator = pG; }
 	virtual inline ParticleGenerator* getParticleGenerator() const { return this->data.generator; }
@@ -55,9 +62,9 @@ private:
 	physx::PxRigidActor* esfera;
 public:
 	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, SolidParticle& p);
-	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
-	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
-	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, float inv_mass, Vector3 Pos, Vector3 Vel, float size = 1.0f, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
+	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, Particle_Shape shape, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
+	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, Particle_Shape shape, float inv_mass, Vector3 Pos, Vector3 Vel, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
+	SolidParticle(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle_Type type, Particle_Shape shape, float inv_mass, Vector3 Pos, Vector3 Vel, float size = 1.0f, float damping = 0.998, Vector4 Col = { 1,0,0,1 });
 	~SolidParticle();
 	
 	void integrate(double time) override;

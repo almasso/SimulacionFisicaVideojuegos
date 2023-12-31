@@ -1,7 +1,7 @@
 #include "Projectile.h"
 #include "../checkMemoryLeaks.h"
 
-Projectile::Projectile(Vector3 Pos, Vector3 Dir, float VelS, float size, ProjectileType type, Vector4 Col) : Particle(Particle::Particle_Type::PROJECTILE, 0.0, Pos, Dir * VelS, size, 0.998f, Col), type(type) {
+Projectile::Projectile(Vector3 Pos, Vector3 Dir, float VelS, float size, ProjectileType type, Vector4 Col) : Particle(Particle::Particle_Type::PROJECTILE, Particle_Shape::SPHERE, 0.0, Pos, Dir * VelS, size, 0.998f, Col), type(type) {
 	switch (type) {
 		case ProjectileType::PROJECTILE_BULLET: {
 			//Para una bala de aproximadamente 0,02kg tenemos que iría a una velocidad de 330m/s, por lo que podemos
