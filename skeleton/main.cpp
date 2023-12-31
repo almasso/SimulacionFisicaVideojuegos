@@ -137,7 +137,7 @@ void initPhysics(bool interactive)
 	_bbReg = new BoundingBoxRegistry();
 	_bbReg->addRegistry("mainBB", new BoundingBox(Vector3(-150, -150, -150), Vector3(150, 150, 150)));
 	field = new Field(gPhysics, gScene, _bbReg->at("mainBB")->bottomCenter());
-	GetCamera()->setTransform(field->getFieldExtremePos() + Vector3(10, 3, 0));
+	GetCamera()->setTransform(field->getFieldExtremePos() + Vector3(40, 20, 0));
 	GetCamera()->setDir(Vector3(1, -0.02, 0.033));
 
 #endif
@@ -205,6 +205,13 @@ void cleanupPhysics(bool interactive)
 	delete particle;
 #endif
 #endif // PROJECT
+	delete field;
+	for (auto it = _bbReg->begin(); it != _bbReg->end();) {
+		BoundingBox* tmp = it->second;
+		it = _bbReg->erase(it);
+		delete tmp;
+	}
+	delete _bbReg;
 	PX_UNUSED(interactive);
 
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
