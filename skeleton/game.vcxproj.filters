@@ -53,6 +53,7 @@
     <ClInclude Include="Project\Verja.h" />
     <ClInclude Include="Utils\AngleUtils.h" />
     <ClInclude Include="Project\Martillo.h" />
+    <ClInclude Include="Text\Text.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

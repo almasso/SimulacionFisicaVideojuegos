@@ -23,12 +23,15 @@
 #include "Generators/ForceGenerator.h"
 #include "Registries/BoundingBoxRegistry.h"
 #include "Messages/Message.h"
+#include "Text/Text.h"
 #include "Project/Field.h"
+#include "Project/Martillo.h"
 #include "checkMemoryLeaks.h"
-//#define PROJECT
+#define PROJECT
 
-std::string display_text = "This is a test";
-std::string bullet_text = "Bullet Mode";
+//std::string display_text = "This is a test";
+//std::string bullet_text = "Bullet Mode";
+TextManager textManager(100, nullptr);
 
 
 using namespace physx;
@@ -79,8 +82,9 @@ Particle* particle;
 #endif //PROJECT
 #ifdef PROJECT
 BoundingBoxRegistry* _bbReg;
-ParticleSystem* _seaPs;
+ParticleSystem* _mainPS;
 Field* field;
+Martillo* martillo;
 #endif
 
 // Initialize physics engine
@@ -120,9 +124,9 @@ void initPhysics(bool interactive)
 	//GaussianSolidParticleGenerator* gspg = new GaussianSolidParticleGenerator(gPhysics, gScene, Particle::Particle_Type::NORMAL, "mainGaussianParticleGenerator", (bbReg->at("particleSysBB"))->center(), Vector3(0.01f, 0.001f, 0.01f), Vector3(0, 50, 0.0f), Vector3(15, 20, 15), 5.0f, 5.0f);
 	//gspg->setMaximumParticles(1000);
 	//partSystem->addParticleGenerator(gspg);
-	UniformSolidParticleGenerator* uspg = new UniformSolidParticleGenerator(gPhysics, gScene, Particle::Particle_Type::SOLID, Particle::Particle_Shape::MIX, "mainUniformParticleGenerator", (bbReg->at("particleSysBB"))->bottomCenter() + Vector3(0,150,0), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f);
-	uspg->setMaximumParticles(1000);
-	partSystem->addParticleGenerator(uspg);
+	//UniformSolidParticleGenerator* uspg = new UniformSolidParticleGenerator(gPhysics, gScene, Particle::Particle_Type::SOLID, Particle::Particle_Shape::MIX, "mainUniformParticleGenerator", (bbReg->at("particleSysBB"))->bottomCenter() + Vector3(0,150,0), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f);
+	//uspg->setMaximumParticles(1000);
+	//partSystem->addParticleGenerator(uspg);
 
 	//partSystem->addParticleGenerator(new GaussianParticleGenerator(Particle::Particle_Type::NORMAL, "mainGaussianParticleGenerator", (bbReg->at("particleSysBB"))->center(), Vector3(0.01f, 0.001f, 0.01f), Vector3(0, 50, 0.0f), Vector3(15, 20, 15), 5.0f, 5.0f));
 	//partSystem->addParticleGenerator(new UniformParticleGenerator(Particle::Particle_Type::NORMAL, "mainUniformParticleGenerator",(bbReg->at("particleSysBB"))->bottomCenter(), Vector3(10, 1, 10), Vector3(1.0f, 50, 1.0f), Vector3(5, 10, 5), 5.0f, 5.0f));
@@ -135,8 +139,11 @@ void initPhysics(bool interactive)
 #endif //PROJECT
 #ifdef PROJECT
 	_bbReg = new BoundingBoxRegistry();
-	_bbReg->addRegistry("mainBB", new BoundingBox(Vector3(-150, -150, -150), Vector3(150, 150, 150)));
-	field = new Field(gPhysics, gScene, _bbReg->at("mainBB")->bottomCenter());
+	_bbReg->addRegistry("mainBB", new BoundingBox(Vector3(-1000, -1000, -1000), Vector3(1000, 1000, 1000)));
+	_bbReg->addRegistry("generationBB", new BoundingBox(Vector3(-150, -150, -150), Vector3(150, 150, 150)));
+	_mainPS = new ParticleSystem(*_bbReg->at("mainBB"));
+	field = new Field(gPhysics, gScene, _bbReg->at("generationBB")->bottomCenter());
+	martillo = new Martillo(gPhysics, gScene, _mainPS, field->getFieldExtremePos() + Vector3(40, 20, 0));
 	GetCamera()->setTransform(field->getFieldExtremePos() + Vector3(40, 20, 0));
 	GetCamera()->setDir(Vector3(1, -0.02, 0.033));
 
@@ -149,7 +156,6 @@ void initPhysics(bool interactive)
 // t: time passed since last call in milliseconds
 void stepPhysics(bool interactive, double t)
 {
-
 	PX_UNUSED(interactive);
 	//std::cout << GetCamera()->getDir().x << " " << GetCamera()->getDir().y << " " << GetCamera()->getDir().z << "\n";
 #ifndef PROJECT
@@ -180,6 +186,10 @@ void stepPhysics(bool interactive, double t)
 #endif
 #endif //PROJECT
 
+#ifdef PROJECT
+	_mainPS->update(t);
+#endif
+
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 
@@ -207,12 +217,14 @@ void cleanupPhysics(bool interactive)
 #endif // PROJECT
 #ifdef PROJECT
 	delete field;
+	delete martillo;
 	for (auto it = _bbReg->begin(); it != _bbReg->end();) {
 		BoundingBox* tmp = it->second;
 		it = _bbReg->erase(it);
 		delete tmp;
 	}
 	delete _bbReg;
+	delete _mainPS;
 #endif
 	PX_UNUSED(interactive);
 

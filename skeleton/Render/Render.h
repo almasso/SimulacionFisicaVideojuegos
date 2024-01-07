@@ -46,9 +46,12 @@
 #endif
 #include <string>
 #include "../checkMemoryLeaks.h"
+#include <vector>
 
-extern std::string display_text;
-extern std::string bullet_text;
+class Text;
+
+using TextManager = std::vector<Text*>;
+extern TextManager textManager;
 
 namespace Snippets
 {

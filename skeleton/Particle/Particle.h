@@ -16,6 +16,7 @@ public:
 		float damping;
 		physx::PxTransform pose;
 		RenderItem* renderItem = nullptr;
+		bool affectedByLifetime;
 		float lifeTime = 0.0f;
 		float size;
 		Vector4 colour;

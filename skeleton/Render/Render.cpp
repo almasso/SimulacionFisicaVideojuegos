@@ -30,6 +30,7 @@
 #include "Render.h"
 #include <assert.h>
 #include "../checkMemoryLeaks.h"
+#include "../Text/Text.h"
 
 using namespace physx;
 
@@ -288,10 +289,16 @@ void startRender(const PxVec3& cameraEye, const PxVec3& cameraDir, PxReal clipNe
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Display text
-	glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
-	drawText(display_text, 0, 0);
-	glColor4f(1.0f, 1.0f, 0.2f, 1.0f);
-	drawText(bullet_text, 350, 0);
+	//glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
+	//drawText(display_text, 0, 0);
+	//glColor4f(1.0f, 1.0f, 0.2f, 1.0f);
+	//drawText(bullet_text, 350, 0);
+	for (Text* t : textManager) {
+		if (t) {
+			glColor4f(t->getColor().x, t->getColor().y, t->getColor().z, t->getColor().w);
+			drawText(t->getText(), t->getPos().x, t->getPos().y);
+		}
+	}
 
 	// Setup camera
 	glMatrixMode(GL_PROJECTION);

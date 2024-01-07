@@ -31,7 +31,7 @@ void ParticleSystem::update(double t) {
 		}
 		else if ((*it)->getLifeTime() >= tiempo_borrado || !_bb.isInBoundingBox((*it)->getPosition().p)) {
 			_particleRegistry.deleteParticleRegistry(*it);
-			(*it)->getData().generator->freeParticles(1);
+			if((*it)->getData().generator) (*it)->getData().generator->freeParticles(1);
 			delete (*it);
 			it = _particles.erase(it);
 		}
@@ -56,6 +56,15 @@ void ParticleSystem::update(double t) {
 			else ++ot;
 		}
 	}
+}
+
+void ParticleSystem::addSpring(Particle* p1, Particle* p2, ForceGenerator* f1, ForceGenerator* f2) {
+	_particleRegistry.addRegistry(p1, f1);
+	_particleRegistry.addRegistry(p2, f2);
+	_forces.push_back(f1);
+	_forces.push_back(f2);
+	_particles.push_back(p1);
+	_particles.push_back(p2);
 }
 
 void ParticleSystem::generateFirework(Vector3 genPos, Vector3 vel, int gen, float damping, Vector4 col) {
