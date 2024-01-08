@@ -110,6 +110,7 @@ void initPhysics(bool interactive)
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
+	//gScene->setGravity(Vector3(0, 0, 0));
 
 #ifndef PROJECT
 	//plane = new Plane(Vector3(0, 0, 0), Vector3(100.0f, 0.1f, 100.0f), Vector4(1, 0, 0, 1));
@@ -143,8 +144,8 @@ void initPhysics(bool interactive)
 	_bbReg->addRegistry("generationBB", new BoundingBox(Vector3(-150, -150, -150), Vector3(150, 150, 150)));
 	_mainPS = new ParticleSystem(*_bbReg->at("mainBB"));
 	field = new Field(gPhysics, gScene, _bbReg->at("generationBB")->bottomCenter());
-	martillo = new Martillo(gPhysics, gScene, _mainPS, field->getFieldExtremePos() + Vector3(40, 20, 0));
-	GetCamera()->setTransform(field->getFieldExtremePos() + Vector3(40, 20, 0));
+	martillo = new Martillo(gPhysics, gScene, _mainPS, field->getFieldSouthmostPos() + Vector3(45, 18, 0));
+	GetCamera()->setTransform(field->getFieldSouthmostPos() + Vector3(40, 20, 0));
 	GetCamera()->setDir(Vector3(1, -0.02, 0.033));
 
 #endif
@@ -188,6 +189,7 @@ void stepPhysics(bool interactive, double t)
 
 #ifdef PROJECT
 	_mainPS->update(t);
+	martillo->update(t);
 #endif
 
 	gScene->simulate(t);
