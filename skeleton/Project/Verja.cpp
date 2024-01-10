@@ -19,16 +19,10 @@ Verja::~Verja() {
 
 void Verja::rotate(float angle, Vector3 axis) {
 	physx::PxQuat rotation(angleutils::degToRad(angle), axis);
-	rotateRigidActor(travesanoSuperior, posicionInicial, rotation);
-	rotateRigidActor(travesanoInferior, posicionInicial, rotation);
+	angleutils::rotateRigidActor(travesanoSuperior, posicionInicial, rotation);
+	angleutils::rotateRigidActor(travesanoInferior, posicionInicial, rotation);
 	Vector3 paloOffset(0.0f, 30.0f, 0.0f);
-	rotateRigidActor(paloDerecho, posicionInicial + paloOffset, rotation);
-	rotateRigidActor(paloIzquierdo, posicionInicial - paloOffset, rotation);
-	rotateRigidActor(mallaCentral, posicionInicial, rotation);
-}
-
-void Verja::rotateRigidActor(SolidPlane* plane, const Vector3& pivot, const physx::PxQuat& rotation) {
-	Vector3 newPosition = rotation.rotate(plane->getPos().p - pivot) + pivot;
-	physx::PxQuat newOrientation = rotation * plane->getPos().q;
-	plane->setPose(physx::PxTransform(newPosition, newOrientation));
+	angleutils::rotateRigidActor(paloDerecho, posicionInicial + paloOffset, rotation);
+	angleutils::rotateRigidActor(paloIzquierdo, posicionInicial - paloOffset, rotation);
+	angleutils::rotateRigidActor(mallaCentral, posicionInicial, rotation);
 }

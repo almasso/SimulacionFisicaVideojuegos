@@ -27,6 +27,8 @@
 #include "Project/Field.h"
 #include "Project/Martillo.h"
 #include "checkMemoryLeaks.h"
+#include "Utils/ColorUtils.h"
+#include "Utils/AngleUtils.h"
 #define PROJECT
 
 //std::string display_text = "This is a test";
@@ -85,6 +87,10 @@ BoundingBoxRegistry* _bbReg;
 ParticleSystem* _mainPS;
 Field* field;
 Martillo* martillo;
+float martilloRot = 0.5f;
+float rotationChangeMartillo = 0.025f;
+bool startRotating = false;
+Text* velMartillo;
 #endif
 
 // Initialize physics engine
@@ -110,7 +116,6 @@ void initPhysics(bool interactive)
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
-	//gScene->setGravity(Vector3(0, 0, 0));
 
 #ifndef PROJECT
 	//plane = new Plane(Vector3(0, 0, 0), Vector3(100.0f, 0.1f, 100.0f), Vector4(1, 0, 0, 1));
@@ -146,8 +151,10 @@ void initPhysics(bool interactive)
 	field = new Field(gPhysics, gScene, _bbReg->at("generationBB")->bottomCenter());
 	martillo = new Martillo(gPhysics, gScene, _mainPS, field->getFieldSouthmostPos() + Vector3(45, 18, 0));
 	GetCamera()->setTransform(field->getFieldSouthmostPos() + Vector3(40, 20, 0));
+	//std::cout << "Camera set at: " << (field->getFieldSouthmostPos() + Vector3(40, 20, 0)).x << "," << (field->getFieldSouthmostPos() + Vector3(40, 20, 0)).y << ", " << (field->getFieldSouthmostPos() + Vector3(40, 20, 0)).z << "\n";
 	GetCamera()->setDir(Vector3(1, -0.02, 0.033));
-
+	velMartillo = new Text("Velocidad de giro del martillo: 0", Vector2(90, 450), colorutils::hexToVec4(0xff0000));
+	textManager[0] = velMartillo;
 #endif
 }
 
@@ -189,7 +196,13 @@ void stepPhysics(bool interactive, double t)
 
 #ifdef PROJECT
 	_mainPS->update(t);
-	martillo->update(t);
+	//martillo->update(t);
+	if (startRotating) {
+		martillo->move(martilloRot);
+		martilloRot += rotationChangeMartillo;
+		rotationChangeMartillo += 0.0001f;
+		velMartillo->setText("Velocidad de giro del martillo: " + std::to_string(martillo->getVel()));
+	}
 #endif
 
 	gScene->simulate(t);
@@ -254,6 +267,15 @@ void keyPress(unsigned char key, const PxTransform& camera)
 			}
 			break;
 		}
+		case 'R': {
+			startRotating = true;
+		} break;
+		case ' ': {
+			if (startRotating) {
+				martillo->lanzar();
+				startRotating = false;
+			}
+		} break;
 	}
 #endif
 

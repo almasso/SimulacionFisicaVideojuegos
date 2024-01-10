@@ -38,6 +38,7 @@ public:
 	virtual inline particle_data getData() const { return data; }
 	virtual inline void setData(const particle_data& data) { this->data = data; }
 	virtual inline void setPosition(Vector3 position) { this->data.pose = physx::PxTransform(position); }
+	virtual inline void setPosition(physx::PxTransform transform) { this->data.pose = transform; }
 	virtual inline void setInverseMass(float inverse_mass) { this->data.inv_mass = inverse_mass; }
 	virtual inline void setVelocity(Vector3 velocity) { this->data.vel = velocity; }
 	virtual inline void addForce(const Force& f) { data.force += f; }
@@ -72,5 +73,6 @@ public:
 	inline void addForce(const Force& f) override { static_cast<physx::PxRigidDynamic*>(esfera)->addForce(f); }
 	inline physx::PxTransform const getPosition() const override { return static_cast<physx::PxRigidDynamic*>(esfera)->getGlobalPose();}
 	inline physx::PxRigidActor* getRigidActor() const { return esfera; }
+	inline void setPosition(physx::PxTransform transform) override { this->data.pose = transform; esfera->setGlobalPose(transform); }
 	inline Vector3 getVelocity() const override { return static_cast<physx::PxRigidDynamic*>(esfera)->getLinearVelocity();}
 };

@@ -8,7 +8,6 @@ private:
 	SolidPlane* paloIzquierdo = nullptr;
 	SolidPlane* paloDerecho = nullptr;
 	SolidPlane* mallaCentral = nullptr;
-	void rotateRigidActor(SolidPlane* plane, const Vector3& pivot, const physx::PxQuat& rotation);
 public:
 	Verja(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Vector3 position);
 	~Verja();

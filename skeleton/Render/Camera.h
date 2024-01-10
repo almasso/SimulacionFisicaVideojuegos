@@ -46,10 +46,10 @@ public:
 	void				handleMotion(int x, int y);
 	void				handleAnalogMove(float x, float y);
 
-	inline void setTransform(physx::PxTransform* tr) { setTransform(tr->p); };
+	inline void setTransform(physx::PxTransform tr) { setTransform(tr.p); mDir = tr.q.rotate(mDir); mDir.normalize(); };
 	inline void setTransform(physx::PxVec3 tr) { mEye = tr; };
-	inline void setDir(physx::PxTransform* dir) { setDir(dir->p); };
-	inline void setDir(physx::PxVec3 dir) { mDir = dir; };
+	inline void setDir(physx::PxTransform dir) { setDir(dir.p); };
+	inline void setDir(physx::PxVec3 dir) { mDir = dir; mDir.normalize(); };
 
 	physx::PxVec3		getEye()	const;
 	physx::PxVec3		getDir()	const;
