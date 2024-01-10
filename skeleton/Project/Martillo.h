@@ -11,6 +11,7 @@ private:
 	physx::PxScene* scene;
 	Vector3 posicionInicial;
 	float velTotal;
+	ParticleSystem* _pS;
 public:
 	Martillo(physx::PxPhysics* gPhysics, physx::PxScene* gScene, ParticleSystem* _pS, Vector3 pos);
 	~Martillo();
