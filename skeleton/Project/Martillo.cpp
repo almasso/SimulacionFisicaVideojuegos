@@ -39,15 +39,9 @@ void Martillo::lanzar() {
 
 	physx::PxQuat rotation90Degrees = physx::PxQuat(physx::PxHalfPi, physx::PxVec3(0.0f, 1.0f, 0.0f));
 	physx::PxVec3 leftDirection = rotation90Degrees.rotate(forwardDirection);
-
-	// Get the current height of the ball above the platform
 	float ballHeight = bola->getPosition().p.y - (posicionInicial + Vector3(offset, -1, 0)).y;
-	// Define a factor to control the trajectory based on height
-	float heightFactor = 0.01f; // Adjust this value to control the influence of height on the trajectory
-	// Calculate the modified direction based on the ball's height
+	float heightFactor = 0.01f;
 	physx::PxVec3 modifiedDirection = leftDirection + physx::PxVec3(0.0f, ballHeight * heightFactor, 0.0f);
-
-
 	float impulseMagnitude = 1000.0f;
 	physx::PxVec3 impulse = modifiedDirection * impulseMagnitude;
 	bola->addForce(impulse, physx::PxForceMode::eIMPULSE);
