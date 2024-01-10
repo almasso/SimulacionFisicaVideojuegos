@@ -10,16 +10,13 @@ Martillo::Martillo(physx::PxPhysics* gPhysics, physx::PxScene* gScene, ParticleS
 	
 	mango->getRigidActor()->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
 
-	f1 = new SpringForceGenerator(0.01, offset, mango);
-	f2 = new SpringForceGenerator(0.01, offset, bola);
+	f1 = new SpringForceGenerator(1, offset, mango);
+	f2 = new SpringForceGenerator(1, offset, bola);
 
 	apoyoBola = new SolidPlane(gPhysics, gScene, pos + Vector3(offset, -1, 0), Vector3(1, 1, 1), colorutils::rgbaToVec4(255, 255, 255, 0));
 
-
 	_pS->addSpring(bola, mango, f1, f2);
 	posicionInicial = pos;
-
-	
 }
 
 Martillo::~Martillo() {
@@ -33,6 +30,7 @@ void Martillo::move(float rot) {
 	angleutils::rotateRigidActor(apoyoBola, posicionInicial - Vector3(5,0,0), rotacion);
 	angleutils::rotateRigidActor(mango, posicionInicial - Vector3(5, 0, 0), rotacion);
 	angleutils::rotateRigidActor(bola, posicionInicial - Vector3(5, 0, 0), rotacion);
+	std::cout << physx::PxMat33(bola->getPosition().q).column2.x << " " << physx::PxMat33(bola->getPosition().q).column2.y << " " << physx::PxMat33(bola->getPosition().q).column2.z << "\n";
 	if (apoyoBola->getPos().p.y <= posicionInicial.y + 3.0f) {
 		apoyoBola->setPose(physx::PxTransform(apoyoBola->getPos().p + Vector3(0, 0.01, 0)));
 	}
@@ -41,6 +39,16 @@ void Martillo::move(float rot) {
 void Martillo::lanzar() {
 	mango->getRigidActor()->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, false);
 	apoyoBola->setPose(physx::PxTransform(Vector3(999999999, 999999999, 99999999)));
+	
+	physx::PxQuat ballRotation = bola->getPosition().q;
+	physx::PxVec3 forwardDirection = physx::PxMat33(ballRotation).column2;
+
+	physx::PxQuat rotation90Degrees = physx::PxQuat(physx::PxHalfPi, physx::PxVec3(0.0f, 1.0f, 0.0f));
+	physx::PxVec3 leftDirection = rotation90Degrees.rotate(forwardDirection);
+
+	float impulseMagnitude = 1000.0f;
+	physx::PxVec3 impulse = leftDirection * impulseMagnitude;
+	bola->addForce(impulse, physx::PxForceMode::eIMPULSE);
 }
 
 void Martillo::update(double t) {

@@ -271,8 +271,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 			startRotating = true;
 		} break;
 		case ' ': {
+			martillo->lanzar();
 			if (startRotating) {
-				martillo->lanzar();
+				
 				startRotating = false;
 			}
 		} break;

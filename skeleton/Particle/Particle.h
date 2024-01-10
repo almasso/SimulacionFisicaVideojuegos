@@ -71,6 +71,7 @@ public:
 	
 	void integrate(double time) override;
 	inline void addForce(const Force& f) override { static_cast<physx::PxRigidDynamic*>(esfera)->addForce(f); }
+	inline void addForce(const Force& f, physx::PxForceMode::Enum mode) { static_cast<physx::PxRigidDynamic*>(esfera)->addForce(f, mode); }
 	inline physx::PxTransform const getPosition() const override { return static_cast<physx::PxRigidDynamic*>(esfera)->getGlobalPose();}
 	inline physx::PxRigidActor* getRigidActor() const { return esfera; }
 	inline void setPosition(physx::PxTransform transform) override { this->data.pose = transform; esfera->setGlobalPose(transform); }
