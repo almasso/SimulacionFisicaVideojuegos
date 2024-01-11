@@ -15,5 +15,6 @@ public:
 	inline Vector3 getFieldLeftmostPos() const { return campo->getPos().p - Vector3(0, 0, dimensionesCampo->z); }
 	inline Vector3 getFieldNorthmostPos() const { return campo->getPos().p + Vector3(dimensionesCampo->x, 0, 0); }
 	inline Vector3 getFieldRightmostPos() const { return campo->getPos().p + Vector3(0, 0, dimensionesCampo->z); }
+	inline physx::PxActor* getFieldActor() const { return campo->getActor(); }
 };
 

@@ -16,6 +16,12 @@ Martillo::Martillo(physx::PxPhysics* gPhysics, physx::PxScene* gScene, ParticleS
 
 Martillo::~Martillo() {
 	if(apoyoBola) delete apoyoBola;
+	if (!linkedToPS) {
+		delete bola;
+		delete mango;
+		delete f1;
+		delete f2;
+	}
 }
 
 void Martillo::move(float rot) {
@@ -34,18 +40,16 @@ void Martillo::lanzar() {
 	mango->getRigidActor()->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, false);
 	apoyoBola->setPose(physx::PxTransform(Vector3(999999999, 999999999, 99999999)));
 	_pS->addSpring(bola, mango, f1, f2);
+	linkedToPS = true;
+
 	physx::PxQuat ballRotation = bola->getPosition().q;
 	physx::PxVec3 forwardDirection = physx::PxMat33(ballRotation).column2;
-
 	physx::PxQuat rotation90Degrees = physx::PxQuat(physx::PxHalfPi, physx::PxVec3(0.0f, 1.0f, 0.0f));
 	physx::PxVec3 leftDirection = rotation90Degrees.rotate(forwardDirection);
 	float ballHeight = bola->getPosition().p.y - (posicionInicial + Vector3(offset, -1, 0)).y;
 	float heightFactor = 0.01f;
 	physx::PxVec3 modifiedDirection = leftDirection + physx::PxVec3(0.0f, ballHeight * heightFactor, 0.0f);
-	float impulseMagnitude = 1000.0f;
+	float impulseMagnitude = 1000.0f;// *velTotal;
 	physx::PxVec3 impulse = modifiedDirection * impulseMagnitude;
 	bola->addForce(impulse, physx::PxForceMode::eIMPULSE);
-}
-
-void Martillo::update(double t) {
 }

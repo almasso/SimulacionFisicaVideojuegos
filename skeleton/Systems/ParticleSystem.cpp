@@ -8,9 +8,9 @@ ParticleGenerator* ParticleSystem::getParticleGenerator(std::string name) {
 }
 
 ParticleSystem::~ParticleSystem() {
-	for (auto p : _particles) delete p;
-	for (auto g : _particle_generators) delete g;
-	for (auto f : _forces) delete f;
+	for (auto p : _particles) if(p) delete p;
+	for (auto g : _particle_generators) if(g) delete g;
+	for (auto f : _forces) if(f) delete f;
 }
 
 void ParticleSystem::update(double t) {

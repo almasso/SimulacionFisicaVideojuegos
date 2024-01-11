@@ -88,9 +88,10 @@ ParticleSystem* _mainPS;
 Field* field;
 Martillo* martillo;
 float martilloRot = 0.5f;
-float rotationChangeMartillo = 0.025f;
-bool startRotating = false;
-Text* velMartillo;
+float rotationChangeMartillo = 0.005f;
+bool startRotating = false, startCounting = false, finalRonda = false;
+int tirada = 1, totalRondas = 5;
+float tiempoEntreRondas = 5.0f, tiempoMaxEntreRondas = 5.0f;
 #endif
 
 // Initialize physics engine
@@ -151,11 +152,29 @@ void initPhysics(bool interactive)
 	field = new Field(gPhysics, gScene, _bbReg->at("generationBB")->bottomCenter());
 	martillo = new Martillo(gPhysics, gScene, _mainPS, field->getFieldSouthmostPos() + Vector3(45, 18, 0));
 	GetCamera()->setTransform(field->getFieldSouthmostPos() + Vector3(40, 20, 0));
-	//std::cout << "Camera set at: " << (field->getFieldSouthmostPos() + Vector3(40, 20, 0)).x << "," << (field->getFieldSouthmostPos() + Vector3(40, 20, 0)).y << ", " << (field->getFieldSouthmostPos() + Vector3(40, 20, 0)).z << "\n";
 	GetCamera()->setDir(Vector3(1, -0.02, 0.033));
-	velMartillo = new Text("Velocidad de giro del martillo: 0", Vector2(90, 450), colorutils::hexToVec4(0xff0000));
-	textManager[0] = velMartillo;
+	
+	textManager[0] = new Text("Velocidad de giro del martillo: 0", Vector2(90, 450), colorutils::hexToVec4(0xff0000));
+	textManager[1] = new Text("Distancias obtenidas", Vector2(320, 300), colorutils::hexToVec4(0x85ded6));
+	textManager[2] = new Text("1 - 0.00m", Vector2(320, 280), colorutils::hexToVec4(0x85ded6));
+	textManager[3] = new Text("2 - 0.00m", Vector2(320, 260), colorutils::hexToVec4(0x85ded6));
+	textManager[4] = new Text("3 - 0.00m", Vector2(320, 240), colorutils::hexToVec4(0x85ded6));
+	textManager[5] = new Text("4 - 0.00m", Vector2(320, 220), colorutils::hexToVec4(0x85ded6));
+	textManager[6] = new Text("5 - 0.00m", Vector2(320, 200), colorutils::hexToVec4(0x85ded6));
+	textManager[7] = new Text("Siguiente ronda en 5", Vector2(90, 300), colorutils::hexToVec4(0x00ffff));
+	textManager[7]->setShow(false);
 #endif
+}
+
+void resetGame() {
+	GetCamera()->setTransform(field->getFieldSouthmostPos() + Vector3(40, 20, 0));
+	GetCamera()->setDir(Vector3(1, -0.02, 0.033));
+	delete martillo;
+	martillo = new Martillo(gPhysics, gScene, _mainPS, field->getFieldSouthmostPos() + Vector3(45, 18, 0));
+	if(tirada < totalRondas) tirada++;
+	tiempoEntreRondas = tiempoMaxEntreRondas;
+	finalRonda = false;
+	textManager[7]->setShow(false);
 }
 
 
@@ -196,12 +215,26 @@ void stepPhysics(bool interactive, double t)
 
 #ifdef PROJECT
 	_mainPS->update(t);
-	//martillo->update(t);
 	if (startRotating) {
 		martillo->move(martilloRot);
 		martilloRot += rotationChangeMartillo;
-		rotationChangeMartillo += 0.0001f;
-		velMartillo->setText("Velocidad de giro del martillo: " + std::to_string(martillo->getVel()));
+		rotationChangeMartillo += 0.000001f;
+		textManager[0]->setText("Velocidad de giro del martillo: " + std::to_string(martillo->getVel()));
+	}
+	if (startCounting) {
+		textManager[tirada + 1]->setText("1 - " + std::to_string(martillo->getDistance()) + "m");
+		GetCamera()->setTransform(martillo->getBallPos() + Vector3(-10, 20, 0));
+		GetCamera()->setDir(Vector3(1, -1, 0));
+	}
+	if (finalRonda) {
+		textManager[7]->setShow(true);
+		if (tiempoEntreRondas <= 0.0f) {
+			resetGame();
+		}
+		else {
+			tiempoEntreRondas -= t;
+			textManager[7]->setText("Siguiente ronda en " + std::to_string((int)(tiempoEntreRondas)));
+		}
 	}
 #endif
 
@@ -231,6 +264,7 @@ void cleanupPhysics(bool interactive)
 #endif
 #endif // PROJECT
 #ifdef PROJECT
+	delete _mainPS;
 	delete field;
 	delete martillo;
 	for (auto it = _bbReg->begin(); it != _bbReg->end();) {
@@ -238,8 +272,8 @@ void cleanupPhysics(bool interactive)
 		it = _bbReg->erase(it);
 		delete tmp;
 	}
+	for (auto t : textManager) delete t;
 	delete _bbReg;
-	delete _mainPS;
 #endif
 	PX_UNUSED(interactive);
 
@@ -273,9 +307,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		case ' ': {
 			martillo->lanzar();
 			if (startRotating) {
-				
 				startRotating = false;
 			}
+			startCounting = true;
 		} break;
 	}
 #endif
@@ -374,6 +408,11 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 {
+	if (startCounting && (actor1 == martillo->getBallActor() || actor2 == martillo->getBallActor()) && (actor1 == field->getFieldActor() || actor2 == field->getFieldActor())) {
+		startCounting = false;
+		textManager[tirada + 1]->setColor(colorutils::hexToVec4(0xffff00));
+		finalRonda = true;
+	}
 	PX_UNUSED(actor1);
 	PX_UNUSED(actor2);
 }

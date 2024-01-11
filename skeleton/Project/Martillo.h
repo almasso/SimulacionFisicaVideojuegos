@@ -12,13 +12,17 @@ private:
 	Vector3 posicionInicial;
 	float velTotal;
 	ParticleSystem* _pS;
+	bool linkedToPS = false;
 public:
 	Martillo(physx::PxPhysics* gPhysics, physx::PxScene* gScene, ParticleSystem* _pS, Vector3 pos);
 	~Martillo();
-	void update(double t);
 	void move(float rot);
 	void lanzar();
-	Vector3 getPos() const { return mango->getPosition().p; }
-	float getVel() const { return velTotal; }
+	inline Vector3 getPos() const { return mango->getPosition().p; }
+	inline float getVel() const { return velTotal; }
+	inline physx::PxActor* getBallActor() const { return bola->getRigidActor(); }
+	inline float getDistance() const { return bola->getPosition().p.x - posicionInicial.x; }
+	inline Vector3 getBallPos() const { return bola->getPosition().p; }
+	inline void unlinkFromPS() { linkedToPS = false; }
 };
 

@@ -20,5 +20,6 @@ public:
 	~SolidPlane();
 	physx::PxTransform getPos() const override { return plano->getGlobalPose(); }
 	void setPose(physx::PxTransform p) { static_cast<physx::PxRigidStatic*>(plano)->setGlobalPose(p); }
+	physx::PxActor* getActor() const { return plano; }
 };
 
