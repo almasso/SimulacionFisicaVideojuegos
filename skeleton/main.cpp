@@ -85,7 +85,7 @@ Particle* particle;
 #endif //PROJECT
 #ifdef PROJECT
 BoundingBoxRegistry* _bbReg;
-ParticleSystem* _mainPS, *_hammerHit;
+ParticleSystem* _mainPS, *_hammerHit, *_fireworksPS;
 ParticleDragGenerator* wind;
 Field* field;
 Martillo* martillo;
@@ -152,7 +152,10 @@ void initPhysics(bool interactive)
 	_bbReg->addRegistry("mainBB", new BoundingBox(Vector3(-1000, -1000, -1000), Vector3(1000, 1000, 1000)));
 	_bbReg->addRegistry("generationBB", new BoundingBox(Vector3(-150, -150, -150), Vector3(150, 150, 150)));
 	_bbReg->addRegistry("windBB", new BoundingBox(Vector3(-600, -150, -400), Vector3(700, 150, 400)));
+	_bbReg->addRegistry("fireworksBB", new BoundingBox(Vector3(-500, -150, -400), Vector3(-400, 150, 400)));
 	_mainPS = new ParticleSystem(*_bbReg->at("mainBB"));
+	_fireworksPS = new ParticleSystem(*_bbReg->at("fireworksBB"));
+	_fireworksPS->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8f, 0)));
 	field = new Field(gPhysics, gScene, _bbReg->at("generationBB")->bottomCenter());
 	martillo = new Martillo(gPhysics, gScene, _mainPS, field->getFieldSouthmostPos() + Vector3(45, 18, 0));
 	GetCamera()->setTransform(field->getFieldSouthmostPos() + Vector3(40, 20, 0));
@@ -188,6 +191,13 @@ void finPartida() {
 		textManager[i]->setShow(false);
 	}
 	finJuego = true;
+	for (int i = 0; i < 4; ++i) {
+		_fireworksPS->generateFirework(_bbReg->at("fireworksBB")->bottomCenter() - Vector3(0, 0, 200), Vector3(0, 50, 0));
+		_fireworksPS->generateFirework(_bbReg->at("fireworksBB")->bottomCenter() - Vector3(0, 0, 100), Vector3(0, 50, 0));
+		_fireworksPS->generateFirework(_bbReg->at("fireworksBB")->bottomCenter(), Vector3(0, 50, 0));
+		_fireworksPS->generateFirework(_bbReg->at("fireworksBB")->bottomCenter() + Vector3(0, 0, 100), Vector3(0, 50, 0));
+		_fireworksPS->generateFirework(_bbReg->at("fireworksBB")->bottomCenter() + Vector3(0, 0, 200), Vector3(0, 50, 0));
+	}
 }
 
 
@@ -246,6 +256,9 @@ void resetPartida() {
 	tirada = 0;
 	finJuego = false;
 	maximaPuntuacion = 0.0f;
+	delete _fireworksPS;
+	_fireworksPS = new ParticleSystem(*_bbReg->at("fireworksBB"));
+	_fireworksPS->addForceGenerator(new GravityForceGenerator(Vector3(0, -9.8f, 0)));
 	resetRonda();
 }
 
@@ -316,6 +329,9 @@ void stepPhysics(bool interactive, double t)
 			textManager[7]->setText("Siguiente ronda en " + std::to_string((int)(tiempoEntreRondas)));
 		}
 	}
+	if (finJuego) {
+		_fireworksPS->update(t);
+	}
 #endif
 
 	gScene->simulate(t);
@@ -354,6 +370,7 @@ void cleanupPhysics(bool interactive)
 	for (auto t : textManager) delete t;
 	delete _bbReg;
 	delete _mainPS;
+	delete _fireworksPS;
 	if(_hammerHit) delete _hammerHit;
 #endif
 	PX_UNUSED(interactive);

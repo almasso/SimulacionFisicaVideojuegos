@@ -169,7 +169,7 @@ std::list<Particle*> UniformSolidParticleGenerator::generateParticles(int numPar
 
 FireworkGenerator::FireworkGenerator(Firework* parent) : ParticleGenerator("fireworkGen", Vector3(0,0,0), Vector3(0,0,0), 0), parent(parent) {
 	for (int i = 0; i < 10; ++i) {
-		models.push_back(new Firework(rand() % 3 + 1, rand() % 1000 / 1000.0f, Vector4(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1)));
+		models.push_back(new Firework(parent->getGen(), rand() % 1000 / 1000.0f, Vector4(rand() % 256 / 255.0f, rand() % 256 / 255.0f, rand() % 256 / 255.0f, 1)));
 	}
 }
 
