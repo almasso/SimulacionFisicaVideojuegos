@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <deque>
+#include <algorithm>
 
 #include "core.hpp"
 #include "RenderUtils.hpp"
@@ -90,9 +91,10 @@ Field* field;
 Martillo* martillo;
 float martilloRot = 0.5f;
 float rotationChangeMartillo = 0.005f;
-bool startRotating = false, startCounting = false, finalRonda = false;
+bool startRotating = false, startCounting = false, finalRonda = false, finJuego = false;
 int tirada = 1, totalRondas = 5, viento = 0;
 float tiempoEntreRondas = 5.0f, tiempoMaxEntreRondas = 5.0f;
+float maximaPuntuacion = 0.0f;
 #endif
 
 // Initialize physics engine
@@ -169,24 +171,39 @@ void initPhysics(bool interactive)
 	textManager[8]->setShow(false);
 	textManager[9] = new Text("Hay viento de cara! Debes lanzar con mas potencia!", Vector2(35, 10), colorutils::hexToVec4(0x05ffea));
 	textManager[9]->setShow(false);
+	textManager[10] = new Text("MAXIMA PUNTUACION: 0.00m", Vector2(120, 320), colorutils::hexToVec4(0xff00f7));
+	textManager[10]->setShow(false);
+	textManager[11] = new Text("ESC para salir, R para reiniciar", Vector2(120, 280), colorutils::hexToVec4(0x05deff));
+	textManager[11]->setShow(false);
 #endif
 }
 
+void finPartida() {
+	textManager[8]->setShow(true);
+	textManager[9]->setShow(false);
+	textManager[10]->setText("MAXIMA PUNTUACION: " + std::to_string(maximaPuntuacion) + "m");
+	textManager[10]->setShow(true);
+	textManager[11]->setShow(true);
+	for (int i = 0; i < 8; ++i) {
+		textManager[i]->setShow(false);
+	}
+	finJuego = true;
+}
+
+
 void resetRonda() {
-	delete _hammerHit;
-	_hammerHit = nullptr;
-	BoundingBox* tmp = _bbReg->at("hitBB");
-	_bbReg->deleteRegister("hitBB");
-	delete tmp;
+	if (tirada != 0) {
+		delete _hammerHit;
+		_hammerHit = nullptr;
+		BoundingBox* tmp = _bbReg->at("hitBB");
+		_bbReg->deleteRegister("hitBB");
+		delete tmp;
+	}
 
 	GetCamera()->setTransform(field->getFieldSouthmostPos() + Vector3(40, 20, 0));
 	GetCamera()->setDir(Vector3(1, -0.02, 0.033));
 	delete martillo;
 	martillo = new Martillo(gPhysics, gScene, _mainPS, field->getFieldSouthmostPos() + Vector3(45, 18, 0));
-	if (tirada < totalRondas) {
-		tirada++;
-		viento = rand() % 2;
-	}
 	tiempoEntreRondas = tiempoMaxEntreRondas;
 	finalRonda = false;
 	textManager[7]->setShow(false);
@@ -194,6 +211,16 @@ void resetRonda() {
 	rotationChangeMartillo = 0.005f;
 	textManager[0]->setText("Velocidad de giro del martillo: 0");
 	
+	if (tirada < totalRondas) {
+		tirada++;
+		viento = rand() % 2;
+		std::cout << viento << "\n";
+	}
+	else {
+		finPartida();
+		return;
+	}
+
 	if (wind) {
 		message::Message m((int)message::msgID::_m_GENERATOR_ERASABLE);
 		m.genData.fg = wind;
@@ -205,6 +232,22 @@ void resetRonda() {
 	if(viento) textManager[9]->setShow(true);
 }
 
+void resetPartida() {
+	textManager[8]->setShow(false);
+	textManager[10]->setShow(false);
+	textManager[11]->setShow(false);
+	for (int i = 0; i < 8; ++i) {
+		textManager[i]->setShow(true);
+		if (i > 1 && i < 7) {
+			textManager[i]->setText(std::to_string(i - 1) + " - 0.00m");
+			textManager[i]->setColor(colorutils::hexToVec4(0x85ded6));
+		}
+	}
+	tirada = 0;
+	finJuego = false;
+	maximaPuntuacion = 0.0f;
+	resetRonda();
+}
 
 // Function to configure what happens in each step of physics
 // interactive: true if the game is rendering, false if it offline
@@ -251,7 +294,6 @@ void stepPhysics(bool interactive, double t)
 	if (startCounting) {
 		if (viento) {
 			if (!wind) {
-				std::cout << "He generado un nuevo gen de viento\n";
 				wind = new ParticleDragGenerator((_bbReg->at("windBB")), Vector3(-300, 0, 0), 1.5f, 0.0f);
 				_mainPS->addForceGenerator(wind);
 			}
@@ -333,23 +375,30 @@ void keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
 #ifdef PROJECT
-	switch (toupper(key)) {
-		case 'M': {
-			for (auto it = _bbReg->begin(); it != _bbReg->end(); ++it) {
-				it->second->isShowing() ? it->second->hide() : it->second->show();
-			}
-			break;
+	if (!finJuego) {
+		switch (toupper(key)) {
+			/*case 'M': {
+				for (auto it = _bbReg->begin(); it != _bbReg->end(); ++it) {
+					it->second->isShowing() ? it->second->hide() : it->second->show();
+				}
+				break;
+			}*/
+			case 'R': {
+				startRotating = true;
+			} break;
+			case ' ': {
+				if (startRotating) {
+					martillo->lanzar();
+					startRotating = false;
+					startCounting = true;
+				}
+			} break;
 		}
-		case 'R': {
-			startRotating = true;
-		} break;
-		case ' ': {
-			if (startRotating) {
-				martillo->lanzar();
-				startRotating = false;
-				startCounting = true;
-			}
-		} break;
+	}
+	else {
+		switch (toupper(key)) {
+			case 'R': resetPartida(); break;
+		}
 	}
 #endif
 
@@ -452,6 +501,7 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 		_hammerHit = new ParticleSystem(*_bbReg->at("hitBB"));
 		_hammerHit->addParticleGenerator(new HammerImpactGaussianGenerator("impact", _bbReg->at("hitBB")->center()));
 		startCounting = false;
+		maximaPuntuacion = std::max<float>(maximaPuntuacion, martillo->getDistance());
 		textManager[tirada + 1]->setColor(colorutils::hexToVec4(0xffff00));
 		finalRonda = true;
 	}
