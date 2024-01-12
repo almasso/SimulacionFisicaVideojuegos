@@ -185,7 +185,7 @@ void resetRonda() {
 	martillo = new Martillo(gPhysics, gScene, _mainPS, field->getFieldSouthmostPos() + Vector3(45, 18, 0));
 	if (tirada < totalRondas) {
 		tirada++;
-		viento = 1;
+		viento = rand() % 2;
 	}
 	tiempoEntreRondas = tiempoMaxEntreRondas;
 	finalRonda = false;
@@ -198,7 +198,7 @@ void resetRonda() {
 		message::Message m((int)message::msgID::_m_GENERATOR_ERASABLE);
 		m.genData.fg = wind;
 		message::MessageManager::sendMessage(m);
-		//wind = nullptr;
+		wind = nullptr;
 	}
 	textManager[9]->setShow(false);
 
@@ -252,7 +252,7 @@ void stepPhysics(bool interactive, double t)
 		if (viento) {
 			if (!wind) {
 				std::cout << "He generado un nuevo gen de viento\n";
-				wind = new ParticleDragGenerator((_bbReg->at("windBB")), Vector3(-100, 0, 0), 1.5f, 0.0f);
+				wind = new ParticleDragGenerator((_bbReg->at("windBB")), Vector3(-300, 0, 0), 1.5f, 0.0f);
 				_mainPS->addForceGenerator(wind);
 			}
 		}
@@ -344,8 +344,8 @@ void keyPress(unsigned char key, const PxTransform& camera)
 			startRotating = true;
 		} break;
 		case ' ': {
-			martillo->lanzar();
 			if (startRotating) {
+				martillo->lanzar();
 				startRotating = false;
 				startCounting = true;
 			}
