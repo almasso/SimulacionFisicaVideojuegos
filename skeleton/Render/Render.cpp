@@ -289,6 +289,7 @@ void startRender(const PxVec3& cameraEye, const PxVec3& cameraDir, PxReal clipNe
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Display text
+	glDisable(GL_LIGHTING);
 	for (Text* t : textManager) {
 		if (t) {
 			if (t->getShow()) {
@@ -297,6 +298,7 @@ void startRender(const PxVec3& cameraEye, const PxVec3& cameraDir, PxReal clipNe
 			}
 		}
 	}
+	glEnable(GL_LIGHTING);
 
 	// Setup camera
 	glMatrixMode(GL_PROJECTION);

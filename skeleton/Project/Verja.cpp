@@ -1,6 +1,8 @@
 #include "Verja.h"
 #include "../Utils/ColorUtils.h"
 #include "../Utils/AngleUtils.h"
+#include "../checkMemoryLeaks.h"
+
 Verja::Verja(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Vector3 position) : posicionInicial(position) {
 	travesanoInferior = new SolidPlane(gPhysics, gScene, position, Vector3(15,0.9,3.7), colorutils::hexToVec4(0xcc1758));
 	travesanoSuperior = new SolidPlane(gPhysics, gScene, position + Vector3(0, 60, 0), Vector3(15,0.9, 3.7), colorutils::hexToVec4(0xcc1758));

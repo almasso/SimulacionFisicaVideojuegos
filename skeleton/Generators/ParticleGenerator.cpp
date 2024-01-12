@@ -1,6 +1,8 @@
 #include "ParticleGenerator.h"
 #include "../checkMemoryLeaks.h"
 #include "../Particle/Firework.h"
+#include "../Utils/ColorUtils.h"
+#include "../checkMemoryLeaks.h"
 
 ParticleGenerator::~ParticleGenerator() {
 	for (auto it = models.begin(); it != models.end();) {
@@ -49,6 +51,18 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles(int numParticl
 		tmp.push_back(partTmp);
 	}
 	return tmp;
+}
+
+HammerImpactGaussianGenerator::HammerImpactGaussianGenerator(std::string name, const Point& generationPosition) : GaussianParticleGenerator(Particle::Particle_Type::NORMAL, Particle::Particle_Shape::MIX, name, generationPosition, Vector3(0.01f, 0.001f, 0.01f), Vector3(0, 50, 0.0f), Vector3(15, 20, 15), 5.0f, 5.0f) {
+	for (auto it = models.begin(); it != models.end();) {
+		if ((*it)) {
+			delete (*it);
+			it = models.erase(it);
+		}
+		else ++it;
+	}
+	setParticle(new Particle(Particle::Particle_Type::NORMAL, Particle::Particle_Shape::CUBE, 0.998, colorutils::hexToVec4(0x009A17)));
+	setParticle(new Particle(Particle::Particle_Type::NORMAL, Particle::Particle_Shape::SPHERE, 0.998, colorutils::hexToVec4(0x009A17)));
 }
 
 GaussianSolidParticleGenerator::GaussianSolidParticleGenerator(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Particle::Particle_Type type, Particle::Particle_Shape shape, std::string name, const Point& generationPosition, const Vector3& sigmaPos, const Vector3& averageSpeed, const Vector3& sigmaSpeed, float averageLifeTime, float sigmaLifeTime) : GaussianParticleGenerator(type, shape, name, generationPosition, sigmaPos, averageSpeed, sigmaSpeed, averageLifeTime, sigmaLifeTime), gPhysics(gPhysics), gScene(gScene) {

@@ -23,6 +23,7 @@ public:
 		Force force;
 		float inv_mass;
 		ParticleGenerator* generator = nullptr;
+		bool erasable = false;
 	};
 
 	Particle(Particle& p);
@@ -52,6 +53,8 @@ public:
 	virtual inline void setParticleGenerator(ParticleGenerator* pG) { this->data.generator = pG; }
 	virtual inline ParticleGenerator* getParticleGenerator() const { return this->data.generator; }
 	virtual inline Vector3 getVelocity() const { return data.vel; }
+	virtual inline bool isErasable() const { return data.erasable; }
+	virtual inline void setErasable() { data.erasable = true; }
 
 protected:
 	particle_data data;

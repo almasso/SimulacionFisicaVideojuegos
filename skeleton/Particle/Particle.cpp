@@ -14,6 +14,7 @@ Particle::Particle(Particle& p) {
 	this->data.force = p.data.force;
 	this->data.inv_mass = p.data.inv_mass;
 	this->data.shape = p.data.shape;
+	this->data.erasable = p.data.erasable;
 	
 	if (!this->data.renderItem) {
 		physx::PxShape* shape;
@@ -48,6 +49,7 @@ Particle::Particle(Particle_Type type, Particle_Shape shape, float inv_mass, Vec
 	data.damping = damping;
 	data.size = size;
 	data.colour = Col;
+	data.erasable = false;
 	physx::PxShape* pxshape;
 	switch (this->data.shape) {
 		case Particle_Shape::SPHERE: {

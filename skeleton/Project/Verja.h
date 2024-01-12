@@ -1,5 +1,6 @@
 #pragma once
 #include "../Extras/Plane.h"
+#include "../checkMemoryLeaks.h"
 class Verja {
 private:
 	Vector3 posicionInicial;

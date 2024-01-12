@@ -22,6 +22,10 @@ Martillo::~Martillo() {
 		delete f1;
 		delete f2;
 	}
+	else {
+		bola->setErasable();
+		mango->setErasable();
+	}
 }
 
 void Martillo::move(float rot) {
@@ -32,7 +36,7 @@ void Martillo::move(float rot) {
 	angleutils::rotateRigidActor(mango, posicionInicial - Vector3(5, 0, 0), rotacion);
 	angleutils::rotateRigidActor(bola, posicionInicial - Vector3(5, 0, 0), rotacion);
 	if (apoyoBola->getPos().p.y <= posicionInicial.y + 3.0f) {
-		apoyoBola->setPose(physx::PxTransform(apoyoBola->getPos().p + Vector3(0, 0.01, 0)));
+		apoyoBola->setPose(physx::PxTransform(apoyoBola->getPos().p + Vector3(0, 0.006, 0)));
 	}
 }
 
@@ -49,7 +53,7 @@ void Martillo::lanzar() {
 	float ballHeight = bola->getPosition().p.y - (posicionInicial + Vector3(offset, -1, 0)).y;
 	float heightFactor = 0.01f;
 	physx::PxVec3 modifiedDirection = leftDirection + physx::PxVec3(0.0f, ballHeight * heightFactor, 0.0f);
-	float impulseMagnitude = 1000.0f;// *velTotal;
+	float impulseMagnitude = 100.0f * velTotal;
 	physx::PxVec3 impulse = modifiedDirection * impulseMagnitude;
 	bola->addForce(impulse, physx::PxForceMode::eIMPULSE);
 }

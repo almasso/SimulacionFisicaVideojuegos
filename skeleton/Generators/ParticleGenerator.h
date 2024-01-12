@@ -49,6 +49,12 @@ public:
 	std::list<Particle*> generateParticles(int numParticles) override;
 };
 
+class HammerImpactGaussianGenerator : public GaussianParticleGenerator {
+public:
+	HammerImpactGaussianGenerator(std::string name, const Point& generationPosition);
+	~HammerImpactGaussianGenerator() = default;
+};
+
 class GaussianSolidParticleGenerator : public GaussianParticleGenerator {
 private:
 	physx::PxPhysics* gPhysics;

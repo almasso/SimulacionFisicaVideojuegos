@@ -1,6 +1,7 @@
 #pragma once
 #include "../Extras/Plane.h"
 #include "Verja.h"
+#include "../checkMemoryLeaks.h"
 #include <vector>
 class Field {
 private:

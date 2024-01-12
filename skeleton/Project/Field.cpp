@@ -1,5 +1,6 @@
 #include "Field.h"
 #include "../Utils/ColorUtils.h"
+#include "../checkMemoryLeaks.h"
 
 Field::Field(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Vector3 position) : jaula(8, nullptr), vallas(4, nullptr) {
 	campo = new SolidPlane(gPhysics, gScene, position, *dimensionesCampo, colorutils::hexToVec4(0x009A17));

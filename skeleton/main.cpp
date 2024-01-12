@@ -84,7 +84,7 @@ Particle* particle;
 #endif //PROJECT
 #ifdef PROJECT
 BoundingBoxRegistry* _bbReg;
-ParticleSystem* _mainPS;
+ParticleSystem* _mainPS, *_hammerHit;
 Field* field;
 Martillo* martillo;
 float martilloRot = 0.5f;
@@ -161,12 +161,19 @@ void initPhysics(bool interactive)
 	textManager[4] = new Text("3 - 0.00m", Vector2(320, 240), colorutils::hexToVec4(0x85ded6));
 	textManager[5] = new Text("4 - 0.00m", Vector2(320, 220), colorutils::hexToVec4(0x85ded6));
 	textManager[6] = new Text("5 - 0.00m", Vector2(320, 200), colorutils::hexToVec4(0x85ded6));
-	textManager[7] = new Text("Siguiente ronda en 5", Vector2(90, 300), colorutils::hexToVec4(0x00ffff));
+	textManager[7] = new Text("Siguiente ronda en 5", Vector2(150, 350), colorutils::hexToVec4(0x00ffff));
 	textManager[7]->setShow(false);
+	textManager[8] = new Text("FIN DE LA PARTIDA", Vector2(160, 350), colorutils::hexToVec4(0xff00f7));
+	textManager[8]->setShow(false);
 #endif
 }
 
-void resetGame() {
+void resetRonda() {
+	delete _hammerHit;
+	BoundingBox* tmp = _bbReg->at("hitBB");
+	_bbReg->deleteRegister("hitBB");
+	delete tmp;
+
 	GetCamera()->setTransform(field->getFieldSouthmostPos() + Vector3(40, 20, 0));
 	GetCamera()->setDir(Vector3(1, -0.02, 0.033));
 	delete martillo;
@@ -175,6 +182,9 @@ void resetGame() {
 	tiempoEntreRondas = tiempoMaxEntreRondas;
 	finalRonda = false;
 	textManager[7]->setShow(false);
+	martilloRot = 0.5f;
+	rotationChangeMartillo = 0.005f;
+	textManager[0]->setText("Velocidad de giro del martillo: 0");
 }
 
 
@@ -184,7 +194,6 @@ void resetGame() {
 void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
-	//std::cout << GetCamera()->getDir().x << " " << GetCamera()->getDir().y << " " << GetCamera()->getDir().z << "\n";
 #ifndef PROJECT
 	if (!pause) {
 		partSystem->update(t);
@@ -222,16 +231,20 @@ void stepPhysics(bool interactive, double t)
 		textManager[0]->setText("Velocidad de giro del martillo: " + std::to_string(martillo->getVel()));
 	}
 	if (startCounting) {
-		textManager[tirada + 1]->setText("1 - " + std::to_string(martillo->getDistance()) + "m");
-		GetCamera()->setTransform(martillo->getBallPos() + Vector3(-10, 20, 0));
-		GetCamera()->setDir(Vector3(1, -1, 0));
+		textManager[tirada + 1]->setText(std::to_string(tirada) + " - " + std::to_string(martillo->getDistance()) + "m");
+		GetCamera()->setTransform(martillo->getBallPos() + Vector3(-10, 90, 0));
+		GetCamera()->setDir(Vector3(1, -3, 0));
 	}
 	if (finalRonda) {
+		_hammerHit->update(t);
+		GetCamera()->setTransform(martillo->getBallPos() + Vector3(-10, 90, 0));
+		GetCamera()->setDir(Vector3(1, -3, 0));
 		textManager[7]->setShow(true);
 		if (tiempoEntreRondas <= 0.0f) {
-			resetGame();
+			resetRonda();
 		}
 		else {
+			if (tiempoEntreRondas > 4.6f && tiempoEntreRondas < 4.8f) _hammerHit->setGenerate(false);
 			tiempoEntreRondas -= t;
 			textManager[7]->setText("Siguiente ronda en " + std::to_string((int)(tiempoEntreRondas)));
 		}
@@ -264,7 +277,6 @@ void cleanupPhysics(bool interactive)
 #endif
 #endif // PROJECT
 #ifdef PROJECT
-	delete _mainPS;
 	delete field;
 	delete martillo;
 	for (auto it = _bbReg->begin(); it != _bbReg->end();) {
@@ -274,6 +286,7 @@ void cleanupPhysics(bool interactive)
 	}
 	for (auto t : textManager) delete t;
 	delete _bbReg;
+	delete _mainPS;
 #endif
 	PX_UNUSED(interactive);
 
@@ -305,11 +318,11 @@ void keyPress(unsigned char key, const PxTransform& camera)
 			startRotating = true;
 		} break;
 		case ' ': {
-			martillo->lanzar();
 			if (startRotating) {
+				martillo->lanzar();
 				startRotating = false;
+				startCounting = true;
 			}
-			startCounting = true;
 		} break;
 	}
 #endif
@@ -409,6 +422,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 {
 	if (startCounting && (actor1 == martillo->getBallActor() || actor2 == martillo->getBallActor()) && (actor1 == field->getFieldActor() || actor2 == field->getFieldActor())) {
+		_bbReg->addRegistry("hitBB", new BoundingBox(martillo->getBallPos() - Vector3(5, 5, 5), martillo->getBallPos() + Vector3(5, 5, 5)));
+		_hammerHit = new ParticleSystem(*_bbReg->at("hitBB"));
+		_hammerHit->addParticleGenerator(new HammerImpactGaussianGenerator("impact", _bbReg->at("hitBB")->center()));
 		startCounting = false;
 		textManager[tirada + 1]->setColor(colorutils::hexToVec4(0xffff00));
 		finalRonda = true;

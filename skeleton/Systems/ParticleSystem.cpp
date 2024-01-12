@@ -7,6 +7,17 @@ ParticleGenerator* ParticleSystem::getParticleGenerator(std::string name) {
 	}
 }
 
+void ParticleSystem::removeParticleGenerator(std::string name) {
+	for (auto it = _particle_generators.begin(); it != _particle_generators.end();) {
+		if ((*it)->getName() == name) {
+			delete (*it);
+			it = _particle_generators.erase(it);
+			break;
+		}
+		else ++it;
+	}
+}
+
 ParticleSystem::~ParticleSystem() {
 	for (auto p : _particles) if(p) delete p;
 	for (auto g : _particle_generators) if(g) delete g;
@@ -29,7 +40,7 @@ void ParticleSystem::update(double t) {
 			delete (*it);
 			it = _particles.erase(it);
 		}
-		else if ((*it)->getLifeTime() >= tiempo_borrado || !_bb.isInBoundingBox((*it)->getPosition().p)) {
+		else if ((*it)->getLifeTime() >= tiempo_borrado || !_bb.isInBoundingBox((*it)->getPosition().p) || (*it)->isErasable()) {
 			_particleRegistry.deleteParticleRegistry(*it);
 			if((*it)->getData().generator) (*it)->getData().generator->freeParticles(1);
 			delete (*it);
@@ -38,10 +49,12 @@ void ParticleSystem::update(double t) {
 		else ++it;
 	}
 
-	for (auto at = _particle_generators.begin(); at != _particle_generators.end(); ++at) {
-		std::list<Particle*> ptcls = (*at)->generateParticles(1);
-		_particleRegistry.addRegistry(ptcls, _forces);
-		_particles.splice(_particles.end(), ptcls);
+	if (generateParticles) {
+		for (auto at = _particle_generators.begin(); at != _particle_generators.end(); ++at) {
+			std::list<Particle*> ptcls = (*at)->generateParticles(1);
+			_particleRegistry.addRegistry(ptcls, _forces);
+			_particles.splice(_particles.end(), ptcls);
+		}
 	}
 	
 	std::list<message::Message> msgs = message::MessageManager::receiveMessages((int)message::msgID::_m_GENERATOR_ERASABLE);
