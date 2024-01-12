@@ -18,6 +18,18 @@ void ParticleSystem::removeParticleGenerator(std::string name) {
 	}
 }
 
+void ParticleSystem::removeForceGenerator(ForceGenerator* fG) {
+	_particleRegistry.deleteInstancesOfForceGenerator(fG);
+	for (auto it = _forces.begin(); it != _forces.end();) {
+		if ((*it) == fG) {
+			delete (*it);
+			it = _forces.erase(it);
+			break;
+		}
+		else ++it;
+	}
+}
+
 ParticleSystem::~ParticleSystem() {
 	for (auto p : _particles) if(p) delete p;
 	for (auto g : _particle_generators) if(g) delete g;

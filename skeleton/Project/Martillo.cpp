@@ -53,7 +53,7 @@ void Martillo::lanzar() {
 	float ballHeight = bola->getPosition().p.y - (posicionInicial + Vector3(offset, -1, 0)).y;
 	float heightFactor = 0.01f;
 	physx::PxVec3 modifiedDirection = leftDirection + physx::PxVec3(0.0f, ballHeight * heightFactor, 0.0f);
-	float impulseMagnitude = 100.0f * velTotal;
+	float impulseMagnitude = 1000.0f;// * velTotal;
 	physx::PxVec3 impulse = modifiedDirection * impulseMagnitude;
 	bola->addForce(impulse, physx::PxForceMode::eIMPULSE);
 }

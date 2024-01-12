@@ -31,6 +31,7 @@ public:
 	void update(double t);
 	inline void addParticleGenerator(ParticleGenerator* pG) { _particle_generators.push_back(pG); };
 	void removeParticleGenerator(std::string name);
+	void removeForceGenerator(ForceGenerator* fG);
 	inline void addForceGenerator(ForceGenerator* fG) { _forces.push_back(fG); _particleRegistry.addRegistry(_particles, fG); }
 	void addSpring(Particle* p1, Particle* p2, ForceGenerator* f1, ForceGenerator* f2);
 	ParticleGenerator* getParticleGenerator(std::string name);

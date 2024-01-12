@@ -19,10 +19,10 @@ Field::Field(physx::PxPhysics* gPhysics, physx::PxScene* gScene, Vector3 positio
 	jaula[7] = new Verja(gPhysics, gScene, getFieldSouthmostPos() + Vector3(100, 2, 36));
 	jaula[7]->rotate(30, Vector3(0, 1, 0));
 
-	vallas[0] = new SolidPlane(gPhysics, gScene, getFieldSouthmostPos(), Vector3(5, 10, dimensionesCampo->z), colorutils::hexToVec4(0x0096FF));
-	vallas[1] = new SolidPlane(gPhysics, gScene, getFieldNorthmostPos(), Vector3(5, 10, dimensionesCampo->z), colorutils::hexToVec4(0x0096FF));
-	vallas[2] = new SolidPlane(gPhysics, gScene, getFieldLeftmostPos(), Vector3(dimensionesCampo->x, 10, 5), colorutils::hexToVec4(0x0096FF));
-	vallas[3] = new SolidPlane(gPhysics, gScene, getFieldRightmostPos(), Vector3(dimensionesCampo->x, 10, 5), colorutils::hexToVec4(0x0096FF));
+	vallas[0] = new SolidPlane(gPhysics, gScene, getFieldSouthmostPos() + Vector3(0, 180, 0), Vector3(5, 400, dimensionesCampo->z), colorutils::hexToVec4(0x0096FF));
+	vallas[1] = new SolidPlane(gPhysics, gScene, getFieldNorthmostPos() + Vector3(0, 180, 0), Vector3(5, 400, dimensionesCampo->z), colorutils::hexToVec4(0x0096FF));
+	vallas[2] = new SolidPlane(gPhysics, gScene, getFieldLeftmostPos() + Vector3(0, 180, 0), Vector3(dimensionesCampo->x, 400, 5), colorutils::hexToVec4(0x0096FF));
+	vallas[3] = new SolidPlane(gPhysics, gScene, getFieldRightmostPos() + Vector3(0, 180, 0), Vector3(dimensionesCampo->x, 400, 5), colorutils::hexToVec4(0x0096FF));
 }
 
 Field::~Field() {

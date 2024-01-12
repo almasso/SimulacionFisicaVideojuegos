@@ -85,12 +85,13 @@ Particle* particle;
 #ifdef PROJECT
 BoundingBoxRegistry* _bbReg;
 ParticleSystem* _mainPS, *_hammerHit;
+ParticleDragGenerator* wind;
 Field* field;
 Martillo* martillo;
 float martilloRot = 0.5f;
 float rotationChangeMartillo = 0.005f;
 bool startRotating = false, startCounting = false, finalRonda = false;
-int tirada = 1, totalRondas = 5;
+int tirada = 1, totalRondas = 5, viento = 0;
 float tiempoEntreRondas = 5.0f, tiempoMaxEntreRondas = 5.0f;
 #endif
 
@@ -148,6 +149,7 @@ void initPhysics(bool interactive)
 	_bbReg = new BoundingBoxRegistry();
 	_bbReg->addRegistry("mainBB", new BoundingBox(Vector3(-1000, -1000, -1000), Vector3(1000, 1000, 1000)));
 	_bbReg->addRegistry("generationBB", new BoundingBox(Vector3(-150, -150, -150), Vector3(150, 150, 150)));
+	_bbReg->addRegistry("windBB", new BoundingBox(Vector3(-600, -150, -400), Vector3(700, 150, 400)));
 	_mainPS = new ParticleSystem(*_bbReg->at("mainBB"));
 	field = new Field(gPhysics, gScene, _bbReg->at("generationBB")->bottomCenter());
 	martillo = new Martillo(gPhysics, gScene, _mainPS, field->getFieldSouthmostPos() + Vector3(45, 18, 0));
@@ -165,11 +167,14 @@ void initPhysics(bool interactive)
 	textManager[7]->setShow(false);
 	textManager[8] = new Text("FIN DE LA PARTIDA", Vector2(160, 350), colorutils::hexToVec4(0xff00f7));
 	textManager[8]->setShow(false);
+	textManager[9] = new Text("Hay viento de cara! Debes lanzar con mas potencia!", Vector2(35, 10), colorutils::hexToVec4(0x05ffea));
+	textManager[9]->setShow(false);
 #endif
 }
 
 void resetRonda() {
 	delete _hammerHit;
+	_hammerHit = nullptr;
 	BoundingBox* tmp = _bbReg->at("hitBB");
 	_bbReg->deleteRegister("hitBB");
 	delete tmp;
@@ -178,13 +183,26 @@ void resetRonda() {
 	GetCamera()->setDir(Vector3(1, -0.02, 0.033));
 	delete martillo;
 	martillo = new Martillo(gPhysics, gScene, _mainPS, field->getFieldSouthmostPos() + Vector3(45, 18, 0));
-	if(tirada < totalRondas) tirada++;
+	if (tirada < totalRondas) {
+		tirada++;
+		viento = 1;
+	}
 	tiempoEntreRondas = tiempoMaxEntreRondas;
 	finalRonda = false;
 	textManager[7]->setShow(false);
 	martilloRot = 0.5f;
 	rotationChangeMartillo = 0.005f;
 	textManager[0]->setText("Velocidad de giro del martillo: 0");
+	
+	if (wind) {
+		message::Message m((int)message::msgID::_m_GENERATOR_ERASABLE);
+		m.genData.fg = wind;
+		message::MessageManager::sendMessage(m);
+		//wind = nullptr;
+	}
+	textManager[9]->setShow(false);
+
+	if(viento) textManager[9]->setShow(true);
 }
 
 
@@ -231,6 +249,13 @@ void stepPhysics(bool interactive, double t)
 		textManager[0]->setText("Velocidad de giro del martillo: " + std::to_string(martillo->getVel()));
 	}
 	if (startCounting) {
+		if (viento) {
+			if (!wind) {
+				std::cout << "He generado un nuevo gen de viento\n";
+				wind = new ParticleDragGenerator((_bbReg->at("windBB")), Vector3(-100, 0, 0), 1.5f, 0.0f);
+				_mainPS->addForceGenerator(wind);
+			}
+		}
 		textManager[tirada + 1]->setText(std::to_string(tirada) + " - " + std::to_string(martillo->getDistance()) + "m");
 		GetCamera()->setTransform(martillo->getBallPos() + Vector3(-10, 90, 0));
 		GetCamera()->setDir(Vector3(1, -3, 0));
@@ -287,6 +312,7 @@ void cleanupPhysics(bool interactive)
 	for (auto t : textManager) delete t;
 	delete _bbReg;
 	delete _mainPS;
+	if(_hammerHit) delete _hammerHit;
 #endif
 	PX_UNUSED(interactive);
 
@@ -318,8 +344,8 @@ void keyPress(unsigned char key, const PxTransform& camera)
 			startRotating = true;
 		} break;
 		case ' ': {
+			martillo->lanzar();
 			if (startRotating) {
-				martillo->lanzar();
 				startRotating = false;
 				startCounting = true;
 			}
